@@ -1,0 +1,29 @@
+import { Controller, Get, Param, Post, Put } from '@nestjs/common';
+
+@Controller('user')
+export class UserController {
+  @Get()
+  async findAll() {
+    return 'All users';
+  }
+
+  @Post()
+  async createUser() {
+    return 'User created';
+  }
+
+  @Get(':userId')
+  async getUser(@Param('userId') userId: string) {
+    return 'Get user with ID ' + userId;
+  }
+
+  @Put(':userId')
+  async updateUser(@Param('userId') userId: string) {
+    return `Update user with ID ${userId}`;
+  }
+
+  @Put(':userId')
+  async deleteUser(@Param('userId') userId: string) {
+    return `Delete user with ID ${userId}`;
+  }
+}
