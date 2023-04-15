@@ -47,12 +47,15 @@ model User {
 
 model Shop {
   id              String    @id @default(cuid())
+  email           String
+  password        String
   name            String
   description     String    @db.Text
   location        String
   address         String?
   phoneNumber     String
   alternateNumber String?
+  image           String?
   whatsappNumber  String?
   instagramHandle String?
   facebookHandle  String?
