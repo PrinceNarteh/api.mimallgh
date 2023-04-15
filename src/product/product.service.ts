@@ -14,7 +14,7 @@ export class ProductService {
     });
   }
 
-  async users(params: {
+  async products(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.ProductWhereUniqueInput;
@@ -31,13 +31,13 @@ export class ProductService {
     });
   }
 
-  async createUser(data: Prisma.ProductCreateInput): Promise<Product> {
+  async createProduct(data: Prisma.ProductCreateInput): Promise<Product> {
     return this.prisma.product.create({
       data,
     });
   }
 
-  async updateUser(params: {
+  async updateProduct(params: {
     where: Prisma.ProductWhereUniqueInput;
     data: Prisma.ProductUpdateInput;
   }): Promise<Product> {
@@ -48,7 +48,7 @@ export class ProductService {
     });
   }
 
-  async deleteUser(where: Prisma.ProductWhereUniqueInput): Promise<Product> {
+  async deleteProduct(where: Prisma.ProductWhereUniqueInput): Promise<Product> {
     return this.prisma.product.delete({
       where,
     });
