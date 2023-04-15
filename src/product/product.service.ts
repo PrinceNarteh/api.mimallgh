@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Product, Prisma } from '@prisma/client';
+import { Prisma, Product } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { IProductInput } from './dto/productDto';
 
 @Injectable()
 export class ProductService {
@@ -14,13 +15,7 @@ export class ProductService {
     });
   }
 
-  async products(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.ProductWhereUniqueInput;
-    where?: Prisma.ProductWhereInput;
-    orderBy?: Prisma.ProductOrderByWithRelationInput;
-  }): Promise<Product[]> {
+  async products(params: IProductInput): Promise<Product[]> {
     const { skip, take, cursor, where, orderBy } = params;
     return this.prisma.product.findMany({
       skip,
@@ -31,7 +26,7 @@ export class ProductService {
     });
   }
 
-  async createProduct(data: Prisma.ProductCreateInput): Promise<Product> {
+  async createProduct(data: Prisma.ProductCreateManyInput): Promise<Product> {
     return this.prisma.product.create({
       data,
     });

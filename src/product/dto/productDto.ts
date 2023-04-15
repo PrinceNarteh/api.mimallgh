@@ -1,4 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
 import {
   IsEnum,
   IsInt,
@@ -61,3 +62,11 @@ export class CreateProductDto {
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
+
+export type IProductInput = {
+  skip?: number;
+  take?: number;
+  cursor?: Prisma.ProductWhereUniqueInput;
+  where?: Prisma.ProductWhereInput;
+  orderBy?: Prisma.ProductOrderByWithRelationInput;
+};
