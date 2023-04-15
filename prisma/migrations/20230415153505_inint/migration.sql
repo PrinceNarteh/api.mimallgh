@@ -26,12 +26,15 @@ CREATE TABLE `User` (
 -- CreateTable
 CREATE TABLE `Shop` (
     `id` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` TEXT NOT NULL,
     `location` VARCHAR(191) NOT NULL,
     `address` VARCHAR(191) NULL,
     `phoneNumber` VARCHAR(191) NOT NULL,
     `alternateNumber` VARCHAR(191) NULL,
+    `image` VARCHAR(191) NULL,
     `whatsappNumber` VARCHAR(191) NULL,
     `instagramHandle` VARCHAR(191) NULL,
     `facebookHandle` VARCHAR(191) NULL,
@@ -59,7 +62,7 @@ CREATE TABLE `Image` (
     `id` VARCHAR(191) NOT NULL,
     `public_id` VARCHAR(191) NOT NULL,
     `secure_url` VARCHAR(191) NOT NULL,
-    `productId` VARCHAR(191) NULL,
+    `productId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -88,7 +91,7 @@ ALTER TABLE `Shop` ADD CONSTRAINT `Shop_ownerId_fkey` FOREIGN KEY (`ownerId`) RE
 ALTER TABLE `Branch` ADD CONSTRAINT `Branch_shopId_fkey` FOREIGN KEY (`shopId`) REFERENCES `Shop`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Image` ADD CONSTRAINT `Image_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `Product`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Image` ADD CONSTRAINT `Image_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Product` ADD CONSTRAINT `Product_shopId_fkey` FOREIGN KEY (`shopId`) REFERENCES `Shop`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

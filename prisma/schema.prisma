@@ -91,8 +91,8 @@ model Image {
   id         String  @id @default(cuid())
   public_id  String
   secure_url String
-  product    Product @relation(fields: [productId], references: [id])
   productId  String
+  product    Product @relation(fields: [productId], references: [id])
 }
 
 model Product {

@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Get, Param } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/productDto';
+import { CreateProductDto, UpdateProductDto } from './dto/productDto';
 import { mapStringToCategory } from 'src/utils/mapper';
 
 @Controller('product')
@@ -13,8 +13,18 @@ export class ProductController {
   }
 
   @Get(':productId')
-  async getProduct(@Param('productId') productId: string) {
-    return this.productService.product({ id: productId });
+  async getProduct(
+    @Param('productId') productId: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
+    const data = {
+      ...updateProductDto,
+      category: mapStringToCategory[updateProductDto.category],
+    };
+    return this.productService.updateProduct({
+      where: { id: productId },
+      data,
+    });
   }
 
   @Post()
