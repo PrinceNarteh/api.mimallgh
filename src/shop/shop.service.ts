@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindManyOptions } from 'typeorm';
-import { Shop } from './shop.entity';
+import { FindManyOptions, Repository } from 'typeorm';
+
 import { CreateShopDto, UpdateShopDto } from './dto/shopDto';
+import { Shop } from './shop.entity';
 
 @Injectable()
 export class ShopService {

@@ -1,3 +1,4 @@
+import { PartialType } from '@nestjs/swagger';
 import {
   IsString,
   IsNumberString,
@@ -77,3 +78,5 @@ export class CreateUserDto {
 //     updatedAt       DateTime  @updatedAt
 //     shop            Shop?
 // }
+
+export class UpdateUserDto extends PartialType(CreateUserDto) {}

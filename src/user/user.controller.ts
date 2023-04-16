@@ -17,7 +17,7 @@ export class UserController {
 
   @Get(':userId')
   async getUser(@Param('userId') userId: string) {
-    return this.userService.user({ id: userId });
+    return this.userService.user(userId);
   }
 
   @Put(':userId')
@@ -27,6 +27,6 @@ export class UserController {
 
   @Put(':userId')
   async deleteUser(@Param('userId') userId: string) {
-    return this.userService.deleteUser({ id: userId });
+    return this.userService.deleteUser(userId);
   }
 }

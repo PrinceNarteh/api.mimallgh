@@ -1,56 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { User, Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, FindManyOptions } from 'typeorm';
+import { User } from './user.entity';
+import { CreateUserDto, UpdateUserDto } from './dto/userDto';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+  ) {}
 
-  async user(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: userWhereUniqueInput,
-    });
+  async user(id: string) {
+    return this.userRepository.findOne({ where: { id } });
   }
 
-  async users(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<User[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
+  async users(params: FindManyOptions<User>) {
+    const { skip, take, where, order, select } = params;
+    return this.userRepository.find({
       skip,
       take,
-      cursor,
       where,
-      orderBy,
+      order,
+      select,
     });
   }
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({
-      data,
-    });
+  async createUser(data: CreateUserDto) {
+    return this.userRepository.create(data);
   }
 
-  async updateUser(params: {
-    where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
-  }): Promise<User> {
-    const { where, data } = params;
-    return this.prisma.user.update({
-      data,
-      where,
-    });
+  async updateUser(id: string, data: UpdateUserDto) {
+    return this.userRepository.update({ id }, { ...data });
   }
 
-  async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prisma.user.delete({
-      where,
-    });
+  async deleteUser(id: string) {
+    return this.userRepository.delete({ id });
   }
 }
