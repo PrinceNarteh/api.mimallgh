@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Product } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto, IProductInput } from './dto/productDto';
 
 @Injectable()
 export class ProductService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly : ) {}
 
   async product(
-    productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
+    
   ): Promise<Product | null> {
-    return this.prisma.product.findUnique({
-      where: productWhereUniqueInput,
-    });
+    return 
   }
 
   async products(params: IProductInput): Promise<Product[]> {

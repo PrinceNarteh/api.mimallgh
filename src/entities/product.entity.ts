@@ -1,5 +1,6 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { Base } from './baseEntity';
+import { Shop } from './shop.entity';
 
 export enum CategoryType {
   FOOD = 'food',
@@ -14,9 +15,6 @@ export enum CategoryType {
 
 @Entity('products')
 export class Product extends Base {
-  @Column()
-  shopId: string;
-
   @Column()
   title: string;
 
@@ -61,4 +59,10 @@ export class Product extends Base {
     public_id: string;
     secure_url: String;
   }>;
+
+  @ManyToOne(() => Shop, (shop) => shop.products, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: '' })
+  shopId: Shop;
 }

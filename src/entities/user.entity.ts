@@ -1,5 +1,6 @@
-import { Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity } from 'typeorm';
 import { Base } from './baseEntity';
+import bcrypt from 'bcrypt';
 
 enum RoleType {
   ADMIN = 'admin',
@@ -83,4 +84,9 @@ export class User extends Base {
   })
   level: string;
   //   shop            Shop?
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 12);
+  }
 }
