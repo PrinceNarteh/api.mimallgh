@@ -10,6 +10,6 @@ export const config: MysqlConnectionOptions = {
   port: 5432,
   username: 'root',
   password: 'root',
-  entities: [],
+  entities: [Product, Shop, User],
   synchronize: true,
 };

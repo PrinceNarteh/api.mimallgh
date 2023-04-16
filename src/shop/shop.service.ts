@@ -1,56 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { Shop, Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, FindManyOptions } from 'typeorm';
+import { Shop } from './shop.entity';
+import { CreateShopDto, UpdateShopDto } from './dto/shopDto';
 
 @Injectable()
 export class ShopService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    @InjectRepository(Shop) private readonly shopRepository: Repository<Shop>,
+  ) {}
 
-  async shop(
-    shopWhereUniqueInput: Prisma.ShopWhereUniqueInput,
-  ): Promise<Shop | null> {
-    return this.prisma.shop.findUnique({
-      where: shopWhereUniqueInput,
-    });
+  async shop(id: string): Promise<Shop | null> {
+    return this.shopRepository.findOne({ where: { id } });
   }
 
-  async shops(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.ShopWhereUniqueInput;
-    where?: Prisma.ShopWhereInput;
-    orderBy?: Prisma.ShopOrderByWithRelationInput;
-  }): Promise<Shop[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.shop.findMany({
+  async shops(params: FindManyOptions<Shop>): Promise<Shop[]> {
+    const { skip, take, where, order, select } = params;
+    return this.shopRepository.find({
       skip,
       take,
-      cursor,
       where,
-      orderBy,
+      order,
+      select,
     });
   }
 
-  async createShop(data: Prisma.ShopCreateInput): Promise<Shop> {
-    return this.prisma.shop.create({
-      data,
-    });
+  async createShop(data: CreateShopDto): Promise<Shop> {
+    return this.shopRepository.create(data);
   }
 
-  async updateShop(params: {
-    where: Prisma.ShopWhereUniqueInput;
-    data: Prisma.ShopUpdateInput;
-  }): Promise<Shop> {
-    const { where, data } = params;
-    return this.prisma.shop.update({
-      data,
-      where,
-    });
+  async updateShop(id: string, data: UpdateShopDto): Promise<Shop> {
+    return this.shopRepository.update({ id }, { ...data });
   }
 
-  async deleteShop(where: Prisma.ShopWhereUniqueInput): Promise<Shop> {
-    return this.prisma.shop.delete({
-      where,
-    });
+  async deleteShop(id: string): Promise<Shop> {
+    return this.shopRepository.delete({ id });
   }
 }
