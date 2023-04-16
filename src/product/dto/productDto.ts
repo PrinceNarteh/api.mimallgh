@@ -9,6 +9,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { Shop } from 'src/shop/shop.entity';
 
 class Image {
   public_id: string;
@@ -17,7 +18,7 @@ class Image {
 
 export class CreateProductDto {
   @IsString()
-  shopId: string;
+  shopId: Shop;
 
   @IsString()
   title: string;
@@ -62,11 +63,3 @@ export class CreateProductDto {
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
-
-export type IProductInput = {
-  skip?: number;
-  take?: number;
-  cursor?: Prisma.ProductWhereUniqueInput;
-  where?: Prisma.ProductWhereInput;
-  orderBy?: Prisma.ProductOrderByWithRelationInput;
-};

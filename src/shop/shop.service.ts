@@ -25,15 +25,15 @@ export class ShopService {
     });
   }
 
-  async createShop(data: CreateShopDto): Promise<Shop> {
+  async createShop(data: CreateShopDto) {
     return this.shopRepository.create(data);
   }
 
-  async updateShop(id: string, data: UpdateShopDto): Promise<Shop> {
+  async updateShop(id: string, data: UpdateShopDto) {
     return this.shopRepository.update({ id }, { ...data });
   }
 
-  async deleteShop(id: string): Promise<Shop> {
+  async deleteShop(id: string) {
     return this.shopRepository.delete({ id });
   }
 }

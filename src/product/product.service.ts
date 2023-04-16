@@ -11,11 +11,11 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  async product(id: string): Promise<Product | null> {
+  async product(id: string) {
     return this.productRepository.findOne({ where: { id } });
   }
 
-  async products(params: FindManyOptions<Product>): Promise<Product[]> {
+  async products(params: FindManyOptions<Product>) {
     const { skip, take, where, order, select } = params;
     return this.productRepository.find({
       skip,
@@ -26,15 +26,15 @@ export class ProductService {
     });
   }
 
-  async createProduct(data: CreateProductDto): Promise<Product> {
+  async createProduct(data: CreateProductDto) {
     return this.productRepository.create(data);
   }
 
-  async updateProduct(id: string, data: UpdateProductDto): Promise<Product> {
+  async updateProduct(id: string, data: UpdateProductDto) {
     return this.productRepository.update({ id: id }, { ...data });
   }
 
-  async deleteProduct(id: string): Promise<Product> {
+  async deleteProduct(id: string) {
     return this.productRepository.delete({ id });
   }
 }

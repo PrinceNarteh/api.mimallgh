@@ -6,14 +6,19 @@ import {
   Param,
   Patch,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto, UpdateProductDto } from './dto/productDto';
 import { mapStringToCategory } from 'src/utils/mapper';
+import { ShopService } from 'src/shop/shop.service';
 
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly shopService: ShopService,
+  ) {}
 
   @Get()
   async allProducts() {
@@ -27,11 +32,18 @@ export class ProductController {
 
   @Post()
   async createProduct(@Body() createProductDto: CreateProductDto) {
-    const product = {
+    const shop = await this.shopService.shop('');
+
+    if (!shop) {
+      return new NotFoundException('Shop not found');
+    }
+
+    const data = {
       ...createProductDto,
-      category: mapStringToCategory[createProductDto.category],
+      shop,
     };
-    return this.productService.createProduct(product);
+
+    return this.productService.createProduct(data);
   }
 
   @Patch(':productId')
