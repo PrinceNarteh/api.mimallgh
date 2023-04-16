@@ -1,58 +1,40 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Product } from '@prisma/client';
-import { CreateProductDto, IProductInput } from './dto/productDto';
+import { Repository, FindManyOptions } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateProductDto, UpdateProductDto } from './dto/productDto';
+import { Product } from './product.entity';
 
 @Injectable()
 export class ProductService {
-  constructor(private readonly : ) {}
+  constructor(
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+  ) {}
 
-  async product(
-    
-  ): Promise<Product | null> {
-    return 
+  async product(id: string): Promise<Product | null> {
+    return this.productRepository.findOne({ where: { id } });
   }
 
-  async products(params: IProductInput): Promise<Product[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.product.findMany({
+  async products(params: FindManyOptions<Product>): Promise<Product[]> {
+    const { skip, take, where, order, select } = params;
+    return this.productRepository.find({
       skip,
       take,
-      cursor,
       where,
-      orderBy,
+      order,
+      select,
     });
   }
 
-  async createProduct(data: Prisma.ProductCreateManyInput): Promise<Product> {
-    return this.prisma.product.create({
-      data,
-    });
+  async createProduct(data: CreateProductDto): Promise<Product> {
+    return this.productRepository.create(data);
   }
 
-  async updateProduct(params: {
-    where: Prisma.ProductWhereUniqueInput;
-    data: CreateProductDto;
-  }): Promise<Product> {
-    const { where, data } = params;
-    return this.prisma.product.update({
-      where,
-      data: {
-        ...data,
-        images: {
-          deleteMany: {
-            productId: where.id,
-          },
-          createMany: {
-            data: data.images,
-          },
-        },
-      },
-    });
+  async updateProduct(id: string, data: UpdateProductDto): Promise<Product> {
+    return this.productRepository.update({ id: id }, { ...data });
   }
 
-  async deleteProduct(where: Prisma.ProductWhereUniqueInput): Promise<Product> {
-    return this.prisma.product.delete({
-      where,
-    });
+  async deleteProduct(id: string): Promise<Product> {
+    return this.productRepository.delete({ id });
   }
 }

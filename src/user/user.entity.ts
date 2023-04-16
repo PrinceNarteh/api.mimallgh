@@ -1,5 +1,5 @@
 import { BeforeInsert, Column, Entity } from 'typeorm';
-import { Base } from './baseEntity';
+import { Base } from '../utils/baseEntity';
 import bcrypt from 'bcrypt';
 
 enum RoleType {

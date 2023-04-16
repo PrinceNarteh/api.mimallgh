@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto, UpdateProductDto } from './dto/productDto';
 import { mapStringToCategory } from 'src/utils/mapper';
@@ -13,18 +21,8 @@ export class ProductController {
   }
 
   @Get(':productId')
-  async getProduct(
-    @Param('productId') productId: string,
-    @Body() updateProductDto: UpdateProductDto,
-  ) {
-    const data = {
-      ...updateProductDto,
-      category: mapStringToCategory[updateProductDto.category],
-    };
-    return this.productService.updateProduct({
-      where: { id: productId },
-      data,
-    });
+  async getProduct(@Param('productId') productId: string) {
+    return this.productService.product(productId);
   }
 
   @Post()
@@ -34,5 +32,18 @@ export class ProductController {
       category: mapStringToCategory[createProductDto.category],
     };
     return this.productService.createProduct(product);
+  }
+
+  @Put(':productId')
+  async updateProduct(
+    @Param('productId') productId: string,
+    @Body() createProductDto: UpdateProductDto,
+  ) {
+    return this.productService.updateProduct(productId, createProductDto);
+  }
+
+  @Delete(':productId')
+  async deleteProduct(@Param('productId') productId: string) {
+    return this.productService.deleteProduct(productId);
   }
 }

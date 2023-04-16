@@ -1,6 +1,6 @@
 import { Column, OneToMany } from 'typeorm';
-import { Base } from './baseEntity';
-import { Product } from './product.entity';
+import { Base } from '../utils/baseEntity';
+import { Product } from '../product/product.entity';
 
 export class Shop extends Base {
   @Column({ unique: true })
