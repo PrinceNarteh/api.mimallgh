@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany } from 'typeorm';
-import { Base } from './baseEntity';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Base } from './base/baseEntity';
 import { Product } from './product.entity';
+import { ShopImage } from './shopImage.entity';
 
 @Entity('shops')
 export class Shop extends Base {
@@ -47,6 +48,9 @@ export class Shop extends Base {
 
   @Column()
   sellerId: string;
+
+  @OneToOne(() => ShopImage, (shopImage) => shopImage.avatar)
+  image: ShopImage;
 
   // @OneToMany(() => Product, (product) => product.shopId)
   // products: Product[];

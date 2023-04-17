@@ -10,6 +10,6 @@ export const config: MysqlConnectionOptions = {
   database: 'mimallgh',
   host: 'localhost',
   port: 3306,
-  entities: [Product, Shop, User],
+  entities: [__dirname + '..' + '/**/*.entity.ts'],
   synchronize: true,
 };

@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
-import { Base } from './baseEntity';
+import { Base } from './base/baseEntity';
 import { Shop } from './shop.entity';
 
 export enum CategoryType {

@@ -1,6 +1,7 @@
-import { BeforeInsert, Column, Entity } from 'typeorm';
-import { Base } from './baseEntity';
+import { BeforeInsert, Column, Entity, OneToOne } from 'typeorm';
+import { Base } from './base/baseEntity';
 import bcrypt from 'bcrypt';
+import { UserImage } from './userImage.entity';
 
 enum RoleType {
   ADMIN = 'admin',
@@ -52,10 +53,8 @@ export class User extends Base {
   @Column()
   password: string;
 
-  @Column({
-    nullable: true,
-  })
-  image: string;
+  @OneToOne(() => UserImage, (userImage) => userImage.avatar)
+  image: UserImage;
 
   @Column({
     nullable: true,
