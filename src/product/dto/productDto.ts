@@ -9,7 +9,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { Shop } from 'src/shop/shop.entity';
+import { Shop } from 'src/entities/shop.entity';
 import { Column } from 'typeorm';
 
 class Image {

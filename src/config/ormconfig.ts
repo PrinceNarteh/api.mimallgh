@@ -1,6 +1,6 @@
-import { Product } from 'src/product/product.entity';
-import { Shop } from 'src/shop/shop.entity';
-import { User } from 'src/user/user.entity';
+import { Product } from 'src/entities/product.entity';
+import { Shop } from 'src/entities/shop.entity';
+import { User } from 'src/entities/user.entity';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 
 export const config: MysqlConnectionOptions = {

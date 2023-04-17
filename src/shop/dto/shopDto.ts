@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
-import { Product } from '../../product/product.entity';
+import { Product } from '../../entities/product.entity';
 import { IsEmail, IsNumberString, IsString, MinLength } from 'class-validator';
 
 export class CreateShopDto {

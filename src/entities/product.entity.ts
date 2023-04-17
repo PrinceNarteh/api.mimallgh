@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
-import { Base } from '../utils/baseEntity';
-import { Shop } from '../shop/shop.entity';
+import { Base } from './baseEntity';
+import { Shop } from './shop.entity';
 
 export enum CategoryType {
   FOOD = 'food',

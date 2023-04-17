@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 
 import { CreateShopDto, UpdateShopDto } from './dto/shopDto';
-import { Shop } from './shop.entity';
+import { Shop } from '../entities/shop.entity';
 
 @Injectable()
 export class ShopService {
