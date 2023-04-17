@@ -10,11 +10,6 @@ export class UserController {
     return 'All users';
   }
 
-  @Post()
-  async createUser() {
-    return 'User created';
-  }
-
   @Get(':userId')
   async getUser(@Param('userId') userId: string) {
     return this.userService.user(userId);

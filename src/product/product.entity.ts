@@ -47,10 +47,10 @@ export class Product extends Base {
   })
   category: string;
 
-  @Column({
-    type: 'array',
-  })
-  rating: number[];
+  // @Column({
+  //   type: 'array',
+  // })
+  // rating: number[];
 
   @Column({
     type: 'simple-array',
@@ -60,9 +60,9 @@ export class Product extends Base {
     secure_url: String;
   }>;
 
-  @ManyToOne(() => Shop, (shop) => shop.products, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: '' })
-  shopId: Shop;
+  // @ManyToOne(() => Shop, (shop) => shop.products, {
+  //   onDelete: 'CASCADE',
+  // })
+  // @JoinColumn({ name: 'shop_id' })
+  // shopId: Shop;
 }

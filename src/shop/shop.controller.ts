@@ -10,7 +10,7 @@ import {
 import { ShopService } from './shop.service';
 import { CreateShopDto, UpdateShopDto } from './dto/shopDto';
 
-@Controller('shop')
+@Controller('shops')
 export class ShopController {
   constructor(private readonly shopService: ShopService) {}
 

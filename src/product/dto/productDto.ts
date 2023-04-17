@@ -1,8 +1,8 @@
 import { PartialType } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
 import {
   IsEnum,
   IsInt,
+  IsNotEmpty,
   IsNumber,
   IsString,
   Max,
@@ -10,23 +10,33 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Shop } from 'src/shop/shop.entity';
+import { Column } from 'typeorm';
 
 class Image {
+  @IsString()
+  @IsNotEmpty({ message: 'public_id is required' })
   public_id: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'secure_url is required' })
   secure_url: string;
 }
 
 export class CreateProductDto {
   @IsString()
+  @IsNotEmpty({ message: 'Shop ID is required' })
   shopId: Shop;
 
   @IsString()
+  @IsNotEmpty({ message: 'Title is required' })
   title: string;
 
   @IsString()
+  @IsNotEmpty({ message: 'Description is required' })
   description: string;
 
   @IsNumber()
+  @IsNotEmpty({ message: 'Phone number is required' })
   price: number;
 
   @IsNumber()
@@ -58,7 +68,8 @@ export class CreateProductDto {
   @IsInt()
   rating: number[];
 
-  @ValidateNested({ each: true, always: true })
+  // @ValidateNested({ always: true })
+  @Column({ type: 'array' })
   images: Image[];
 }
 

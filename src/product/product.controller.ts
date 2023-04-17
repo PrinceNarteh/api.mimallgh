@@ -1,23 +1,21 @@
 import {
   Body,
   Controller,
-  Post,
+  Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
-  Delete,
-  NotFoundException,
+  Post,
 } from '@nestjs/common';
-import { ProductService } from './product.service';
-import { CreateProductDto, UpdateProductDto } from './dto/productDto';
-import { mapStringToCategory } from 'src/utils/mapper';
 import { ShopService } from 'src/shop/shop.service';
+import { CreateProductDto, UpdateProductDto } from './dto/productDto';
+import { ProductService } from './product.service';
 
-@Controller('product')
+@Controller('products')
 export class ProductController {
   constructor(
-    private readonly productService: ProductService,
-    private readonly shopService: ShopService,
+    private readonly productService: ProductService, // private readonly shopService: ShopService,
   ) {}
 
   @Get()
@@ -32,18 +30,20 @@ export class ProductController {
 
   @Post()
   async createProduct(@Body() createProductDto: CreateProductDto) {
-    const shop = await this.shopService.shop('');
+    // const shop = await this.shopService.shop('');
 
-    if (!shop) {
-      return new NotFoundException('Shop not found');
-    }
+    // if (!shop) {
+    //   return new NotFoundException('Shop not found');
+    // }
+
+    console.log(createProductDto);
 
     const data = {
       ...createProductDto,
-      shop,
+      // shop,
     };
 
-    return this.productService.createProduct(data);
+    return createProductDto;
   }
 
   @Patch(':productId')

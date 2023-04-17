@@ -7,8 +7,8 @@ import { ShopService } from './shop.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Shop])],
-  exports: [ShopService],
   controllers: [ShopController],
+  exports: [ShopService],
   providers: [ShopService],
 })
 export class ShopModule {}

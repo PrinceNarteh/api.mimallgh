@@ -1,7 +1,8 @@
-import { Column, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { Base } from '../utils/baseEntity';
 import { Product } from '../product/product.entity';
 
+@Entity('shops')
 export class Shop extends Base {
   @Column({ unique: true })
   email: string;
@@ -47,8 +48,8 @@ export class Shop extends Base {
   @Column()
   sellerId: string;
 
-  @OneToMany(() => Product, (product) => product.shopId)
-  products: Product[];
+  // @OneToMany(() => Product, (product) => product.shopId)
+  // products: Product[];
 
   // branches        Branch[]
 }
