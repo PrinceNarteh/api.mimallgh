@@ -14,6 +14,10 @@ export class UserService {
     return this.userRepository.findOne({ where: { id } });
   }
 
+  async findOneWithEmail(email: string) {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
   async users(params: FindManyOptions<User>) {
     const { skip, take, where, order, select } = params;
     return this.userRepository.find({
