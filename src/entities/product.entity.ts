@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Base } from './base/baseEntity';
 import { Shop } from './shop.entity';
+import { ProductImage } from './productImage.entity';
 
 export enum CategoryType {
   FOOD = 'food',
@@ -47,22 +48,21 @@ export class Product extends Base {
   })
   category: string;
 
-  // @Column({
-  //   type: 'array',
-  // })
-  // rating: number[];
-
   @Column({
-    type: 'simple-array',
+    type: 'array',
+    nullable: true,
   })
-  images: Array<{
-    public_id: string;
-    secure_url: String;
-  }>;
+  rating: number[];
+  
+  @OneToMany(() => ProductImage, (productImage) => productImage.images, {
+    onDelete: 'CASCADE',
+  })
+  images: ProductImage[];
 
-  // @ManyToOne(() => Shop, (shop) => shop.products, {
-  //   onDelete: 'CASCADE',
-  // })
-  // @JoinColumn({ name: 'shop_id' })
-  // shopId: Shop;
+
+  @ManyToOne(() => Shop, (shop) => shop.products, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'shop_id' })
+  shopId: Shop;
 }

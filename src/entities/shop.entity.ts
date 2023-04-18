@@ -52,8 +52,8 @@ export class Shop extends Base {
   @OneToOne(() => ShopImage, (shopImage) => shopImage.avatar)
   image: ShopImage;
 
-  // @OneToMany(() => Product, (product) => product.shopId)
-  // products: Product[];
+  @OneToMany(() => Product, (product) => product.shopId)
+  products: Product[];
 
   // branches        Branch[]
 }

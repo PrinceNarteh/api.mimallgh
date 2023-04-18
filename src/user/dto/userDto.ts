@@ -6,6 +6,8 @@ import {
   MinLength,
   IsBoolean,
 } from 'class-validator';
+import { UserImage } from 'src/entities/userImage.entity';
+import { OneToOne } from 'typeorm';
 
 export class CreateUserDto {
   @IsString()
@@ -37,9 +39,6 @@ export class CreateUserDto {
   password: string;
 
   @IsString()
-  image?: string;
-
-  @IsString()
   cardType?: string;
 
   @IsString()
@@ -47,6 +46,9 @@ export class CreateUserDto {
 
   @IsBoolean()
   active: boolean;
+
+  @OneToOne(() => UserImage, (userImage) => userImage.avatar)
+  image?: UserImage;
 
   //     role            Role
   //     level           Level?

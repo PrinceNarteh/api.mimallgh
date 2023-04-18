@@ -1,4 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsEnum,
   IsInt,
@@ -9,18 +10,8 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { ProductImage } from 'src/entities/productImage.entity';
 import { Shop } from 'src/entities/shop.entity';
-import { Column } from 'typeorm';
-
-class Image {
-  @IsString()
-  @IsNotEmpty({ message: 'public_id is required' })
-  public_id: string;
-
-  @IsString()
-  @IsNotEmpty({ message: 'secure_url is required' })
-  secure_url: string;
-}
 
 export class CreateProductDto {
   @IsString()
@@ -68,9 +59,9 @@ export class CreateProductDto {
   @IsInt()
   rating: number[];
 
-  // @ValidateNested({ always: true })
-  @Column({ type: 'array' })
-  images: Image[];
+  @ValidateNested()
+  @Type(() => ProductImage)
+  images: ProductImage[];
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}

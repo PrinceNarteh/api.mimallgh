@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindManyOptions } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { User } from 'src/entities/user.entity';
 import { CreateUserDto, UpdateUserDto } from './dto/userDto';
+import { UserImage } from 'src/entities/userImage.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(UserImage)
+    private readonly imageRepository: Repository<UserImage>,
   ) {}
 
   async user(id: string) {
@@ -30,7 +33,13 @@ export class UserService {
   }
 
   async createUser(data: CreateUserDto) {
-    return this.userRepository.create(data);
+    const { image, ...res } = data;
+    const img = this.imageRepository.create(image);
+    const newData = {
+      ...res,
+      image: img,
+    };
+    return this.userRepository.create(newData);
   }
 
   async updateUser(id: string, data: UpdateUserDto) {
