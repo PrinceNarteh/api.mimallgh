@@ -5,6 +5,7 @@ import {
   IsEmail,
   MinLength,
   IsBoolean,
+  IsOptional,
 } from 'class-validator';
 import { UserImage } from 'src/entities/userImage.entity';
 import { OneToOne } from 'typeorm';
@@ -17,18 +18,22 @@ export class CreateUserDto {
   lastName: string;
 
   @IsString()
+  @IsOptional()
   middleName?: string;
 
   @IsString()
+  @IsOptional()
   address?: string;
 
   @IsNumberString()
   phoneNumber: string;
 
   @IsNumberString()
+  @IsOptional()
   alternateNumber: string;
 
   @IsString()
+  @IsOptional()
   nationality: string;
 
   @IsEmail()
@@ -39,14 +44,18 @@ export class CreateUserDto {
   password: string;
 
   @IsString()
+  @IsOptional()
   cardType?: string;
 
   @IsString()
+  @IsOptional()
   cardNumber?: string;
 
-  @IsBoolean()
+  @IsBoolean({})
+  @IsOptional()
   active: boolean;
 
+  @IsOptional()
   @OneToOne(() => UserImage, (userImage) => userImage.avatar)
   image?: UserImage;
 
@@ -56,29 +65,5 @@ export class CreateUserDto {
   //     updatedAt       DateTime  @updatedAt
   //     shop            Shop?
 }
-
-// model User {
-//     id              String    @id @default(cuid())
-//     firstName       String
-//     lastName        String
-//     middleName      String?
-//     address         String?
-//     phoneNumber     String
-//     alternateNumber String?
-//     nationality     String
-//     email           String    @unique
-//     password        String
-//     image           String?
-//     cardType        String?
-//     cardNumber      String?
-//     active          Boolean   @default(true)
-//     role            Role
-//     level           Level?
-//     accounts        Account[]
-//     sessions        Session[]
-//     createdAt       DateTime  @default(now())
-//     updatedAt       DateTime  @updatedAt
-//     shop            Shop?
-// }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}

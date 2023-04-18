@@ -34,12 +34,16 @@ export class UserService {
 
   async createUser(data: CreateUserDto) {
     const { image, ...res } = data;
-    const img = this.imageRepository.create(image);
-    const newData = {
-      ...res,
-      image: img,
-    };
-    return this.userRepository.create(newData);
+    if (image) {
+      const img = this.imageRepository.create(image);
+      const newData = {
+        ...res,
+        image: img,
+      };
+      return this.userRepository.create(newData);
+    } else {
+      return this.userRepository.create(data);
+    }
   }
 
   async updateUser(id: string, data: UpdateUserDto) {

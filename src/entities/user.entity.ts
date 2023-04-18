@@ -2,6 +2,7 @@ import { BeforeInsert, Column, Entity, OneToOne } from 'typeorm';
 import { Base } from './base/baseEntity';
 import bcrypt from 'bcrypt';
 import { UserImage } from './userImage.entity';
+import { Shop } from './shop.entity';
 
 enum RoleType {
   ADMIN = 'admin',
@@ -74,15 +75,19 @@ export class User extends Base {
   @Column({
     type: 'enum',
     enum: RoleType,
+    default: RoleType.USER,
   })
   role: string;
 
   @Column({
     type: 'enum',
     enum: LevelType,
+    default: LevelType.LEVEL_ONE,
   })
   level: string;
-  //   shop            Shop?
+
+  @OneToOne(() => Shop, (shop) => shop.owner)
+  shop: Shop;
 
   @BeforeInsert()
   async hashPassword() {

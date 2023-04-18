@@ -48,17 +48,16 @@ export class Product extends Base {
   })
   category: string;
 
-  @Column({
-    type: 'array',
-    nullable: true,
-  })
-  rating: number[];
-  
+  // @Column({
+  //   type: 'array',
+  //   nullable: true,
+  // })
+  // rating: number[];
+
   @OneToMany(() => ProductImage, (productImage) => productImage.images, {
     onDelete: 'CASCADE',
   })
   images: ProductImage[];
-
 
   @ManyToOne(() => Shop, (shop) => shop.products, {
     onDelete: 'CASCADE',
