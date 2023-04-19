@@ -54,7 +54,7 @@ export class Shop extends Base {
   @JoinColumn()
   owner: User;
 
-  @OneToOne(() => ShopImage, (shopImage) => shopImage.avatar)
+  @OneToOne(() => ShopImage, (shopImage) => shopImage.shopId)
   image: ShopImage;
 
   @OneToMany(() => Product, (product) => product.shopId)

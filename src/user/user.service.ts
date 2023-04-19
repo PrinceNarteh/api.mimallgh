@@ -9,16 +9,20 @@ import { UserImage } from 'src/entities/userImage.entity';
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(UserImage)
-    private readonly imageRepository: Repository<UserImage>,
+    
   ) {}
 
   async user(id: string) {
     return this.userRepository.findOne({ where: { id } });
   }
 
-  async findOneWithEmail(email: string) {
-    return this.userRepository.findOne({ where: { email } });
+  async findOneByEmailOrPhoneNumber(emailOrPhoneNumber: string) {
+    return this.userRepository.findOne({
+      where: [
+        { email: emailOrPhoneNumber },
+        { phoneNumber: emailOrPhoneNumber },
+      ],
+    });
   }
 
   async users(params: FindManyOptions<User>) {
@@ -40,9 +44,15 @@ export class UserService {
         ...res,
         image: img,
       };
-      return this.userRepository.create(newData);
+      const user = this.userRepository.create(newData);
+      await this.userRepository.save(user);
+      const { password, ...result } = user;
+      return result;
     } else {
-      return this.userRepository.create(data);
+      const user = this.userRepository.create(data);
+      await this.userRepository.save(user);
+      const { password, ...result } = user;
+      return result;
     }
   }
 

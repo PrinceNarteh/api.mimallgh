@@ -7,6 +7,8 @@ import {
   IsBoolean,
   IsOptional,
 } from 'class-validator';
+import { Shop } from 'src/entities/shop.entity';
+import { UserLevelType, UserRoleType } from 'src/entities/user.entity';
 import { UserImage } from 'src/entities/userImage.entity';
 import { OneToOne } from 'typeorm';
 
@@ -56,14 +58,19 @@ export class CreateUserDto {
   active: boolean;
 
   @IsOptional()
-  @OneToOne(() => UserImage, (userImage) => userImage.avatar)
+  @OneToOne(() => UserImage, (userImage) => userImage.userId)
   image?: UserImage;
 
-  //     role            Role
-  //     level           Level?
-  //     createdAt       DateTime  @default(now())
-  //     updatedAt       DateTime  @updatedAt
-  //     shop            Shop?
+  @IsString()
+  @IsOptional()
+  role: UserRoleType;
+
+  @IsString()
+  @IsOptional()
+  level: UserLevelType;
+
+  @IsOptional()
+  shopId: Shop;
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}

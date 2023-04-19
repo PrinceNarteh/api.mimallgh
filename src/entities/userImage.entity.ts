@@ -5,6 +5,8 @@ import { User } from './user.entity';
 @Entity('user_images')
 export class UserImage extends BaseImage {
   @OneToOne(() => User, (user) => user.image)
-  @JoinColumn()
-  avatar: User;
+  @JoinColumn({
+    name: 'user_id',
+  })
+  userId: User;
 }

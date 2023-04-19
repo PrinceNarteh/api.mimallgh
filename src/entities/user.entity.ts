@@ -4,9 +4,9 @@ import bcrypt from 'bcrypt';
 import { UserImage } from './userImage.entity';
 import { Shop } from './shop.entity';
 
-export type RoleType = 'admin' | 'user' | 'seller';
+export type UserRoleType = 'admin' | 'user' | 'seller';
 
-export type LevelType =
+export type UserLevelType =
   | 'level_one'
   | 'level_two'
   | 'level_three'
@@ -51,7 +51,7 @@ export class User extends Base {
   @Column()
   password: string;
 
-  @OneToOne(() => UserImage, (userImage) => userImage.avatar)
+  @OneToOne(() => UserImage, (userImage) => userImage.userId)
   image: UserImage;
 
   @Column({

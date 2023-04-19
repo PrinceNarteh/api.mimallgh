@@ -11,7 +11,7 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string) {
-    const user = await this.userService.findOneWithUserName(username);
+    const user = await this.userService.findOneByEmailOrPhoneNumber(username);
     if (user && (await bcrypt.compare(password, user.password))) {
       const { password, ...result } = user;
       return result;
@@ -20,12 +20,22 @@ export class AuthService {
   }
 
   async login(user: User) {
-    const payload = {
-      username: user.email,
-      sub: {
-        name: user.name,
-      },
-    };
+    let payload: object;
+
+    if (user.role === 'seller') {
+      payload = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        shopId: user.shop,
+      };
+    } else {
+      payload = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      };
+    }
 
     return {
       ...user,
@@ -35,12 +45,22 @@ export class AuthService {
   }
 
   async refreshToken(user: User) {
-    const payload = {
-      username: user.email,
-      sub: {
-        name: user.name,
-      },
-    };
+    let payload: object;
+
+    if (user.role === 'seller') {
+      payload = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        shopId: user.shop,
+      };
+    } else {
+      payload = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      };
+    }
 
     return {
       accessToken: this.jwtService.sign(payload),
