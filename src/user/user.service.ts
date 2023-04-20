@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { FindManyOptions, Repository } from 'typeorm';
@@ -39,6 +39,14 @@ export class UserService {
   }
 
   async createUser(data: CreateUserDto) {
+    const emailOrPhoneNumberExist = await this.userRepository.findOne({
+      where: [{ email: data.email }, { phoneNumber: data.phoneNumber }],
+    });
+
+    if (emailOrPhoneNumberExist) {
+      throw new BadRequestException('Email or Phone number already in used.');
+    }
+
     const { image, ...res } = data;
     if (image) {
       const img = this.userImgRepo.create(image);
