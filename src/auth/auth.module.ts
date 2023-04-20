@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
-import { UserImageModule } from 'src/user-image/user-image.module';
+import { UserImage } from 'src/entities/userImage.entity';
 import { UserService } from 'src/user/user.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -12,12 +12,11 @@ import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, UserImage]),
     JwtModule.register({
       secret: `${process.env.jwt_secret}`,
       signOptions: { expiresIn: '15m' },
     }),
-    UserImageModule,
   ],
   providers: [
     AuthService,

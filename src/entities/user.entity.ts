@@ -1,6 +1,6 @@
 import { BeforeInsert, Column, Entity, OneToOne } from 'typeorm';
 import { Base } from './base/baseEntity';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { UserImage } from './userImage.entity';
 import { Shop } from './shop.entity';
 
