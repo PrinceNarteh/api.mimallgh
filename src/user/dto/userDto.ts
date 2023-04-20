@@ -1,4 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsNumberString,
@@ -6,6 +7,7 @@ import {
   MinLength,
   IsBoolean,
   IsOptional,
+  ValidateNested,
 } from 'class-validator';
 import { Shop } from 'src/entities/shop.entity';
 import { UserLevelType, UserRoleType } from 'src/entities/user.entity';
@@ -53,7 +55,7 @@ export class CreateUserDto {
   @IsOptional()
   cardNumber?: string;
 
-  @IsBoolean({})
+  @IsBoolean()
   @IsOptional()
   active: boolean;
 
@@ -70,6 +72,8 @@ export class CreateUserDto {
   level: UserLevelType;
 
   @IsOptional()
+  @ValidateNested()
+  @Type(() => Shop)
   shopId: Shop;
 }
 

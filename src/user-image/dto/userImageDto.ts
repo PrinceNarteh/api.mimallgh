@@ -1,4 +1,5 @@
 import { IsString } from 'class-validator';
+import { User } from 'src/entities/user.entity';
 
 export class CreateUserImageDto {
   @IsString()
@@ -6,7 +7,7 @@ export class CreateUserImageDto {
 
   @IsString()
   secure_url: string;
-  
+
   @IsString()
-  secure_url: string;
+  userId: User;
 }

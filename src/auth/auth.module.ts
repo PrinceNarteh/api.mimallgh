@@ -1,15 +1,24 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { UserService } from 'src/user/user.service';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { LocalStrategy } from './strategies/local-strategy';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
+import { UserImageModule } from 'src/user-image/user-image.module';
+import { UserService } from 'src/user/user.service';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt-strategy';
+import { LocalStrategy } from './strategies/local-strategy';
 import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
 
 @Module({
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    JwtModule.register({
+      secret: `${process.env.jwt_secret}`,
+      signOptions: { expiresIn: '15m' },
+    }),
+    UserImageModule,
+  ],
   providers: [
     AuthService,
     UserService,
@@ -19,12 +28,5 @@ import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
     UserService,
   ],
   controllers: [AuthController],
-  imports: [
-    TypeOrmModule.forFeature([User]),
-    JwtModule.register({
-      secret: `${process.env.jwt_secret}`,
-      signOptions: { expiresIn: '60s' },
-    }),
-  ],
 })
 export class AuthModule {}
