@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, OneToOne } from 'typeorm';
+import { BeforeInsert, Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { Base } from './base/baseEntity';
 import * as bcrypt from 'bcrypt';
 import { UserImage } from './userImage.entity';
@@ -79,13 +79,13 @@ export class User extends Base {
   @Column({
     type: 'enum',
     enum: ['level_one', 'level_two', 'level_three', 'super_user'],
-    default: 'level_one',
     nullable: true,
   })
   level: string;
 
-  @OneToOne(() => Shop, (shop) => shop.owner)
-  shop: Shop;
+  @OneToOne(() => Shop, (shop) => shop.ownerId)
+  @JoinColumn()
+  shopId: Shop;
 
   @BeforeInsert()
   async hashPassword() {

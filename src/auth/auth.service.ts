@@ -30,7 +30,7 @@ export class AuthService {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
-        shopId: user.shop,
+        shopId: user.shopId,
       };
     } else {
       payload = {
@@ -55,7 +55,7 @@ export class AuthService {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
-        shopId: user.shop,
+        shopId: user.shopId,
       };
     } else {
       payload = {

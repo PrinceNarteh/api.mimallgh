@@ -1,15 +1,7 @@
 import { PartialType } from '@nestjs/swagger';
-import { Product } from '../../entities/product.entity';
-import { IsEmail, IsNumberString, IsString, MinLength } from 'class-validator';
+import { IsNumberString, IsOptional, IsString } from 'class-validator';
 
 export class CreateShopDto {
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  @MinLength(6)
-  password: string;
-
   @IsString()
   name: string;
 
@@ -20,21 +12,26 @@ export class CreateShopDto {
   location: string;
 
   @IsString()
+  @IsOptional()
   address: string;
 
   @IsNumberString()
   phoneNumber: string;
 
   @IsNumberString()
+  @IsOptional()
   alternateNumber: string;
 
   @IsNumberString()
+  @IsOptional()
   whatsappNumber: string;
 
   @IsString()
+  @IsOptional()
   instagramHandle: string;
 
   @IsString()
+  @IsOptional()
   facebookHandle: string;
 
   @IsString()
@@ -42,13 +39,6 @@ export class CreateShopDto {
 
   @IsString()
   closingTime: string;
-
-  @IsString()
-  sellerId: string;
-
-  //   products: Product[];
-
-  // branches        Branch[]
 }
 
 export class UpdateShopDto extends PartialType(CreateShopDto) {}

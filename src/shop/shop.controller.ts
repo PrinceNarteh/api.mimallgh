@@ -6,9 +6,12 @@ import {
   Post,
   Param,
   Body,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { CreateShopDto, UpdateShopDto } from './dto/shopDto';
+import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('shops')
 export class ShopController {
@@ -24,9 +27,10 @@ export class ShopController {
     return this.shopService.shop(shopId);
   }
 
+  @UseGuards(JwtGuard)
   @Post()
-  async createShop(@Body() data: CreateShopDto) {
-    return this.shopService.createShop(data);
+  async createShop(@Request() req, @Body() data: CreateShopDto) {
+    return this.shopService.createShop(req.user, data);
   }
 
   @Patch(':shopId')

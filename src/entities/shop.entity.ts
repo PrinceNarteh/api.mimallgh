@@ -1,20 +1,13 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, Index, OneToMany, OneToOne } from 'typeorm';
 import { Base } from './base/baseEntity';
 import { Product } from './product.entity';
 import { ShopImage } from './shopImage.entity';
 import { User } from './user.entity';
 
 @Entity('shops')
+@Index(['name', 'location'], { unique: true })
 export class Shop extends Base {
-  @Column({ unique: true })
-  email: string;
-
-  @Column()
-  password: string;
-
-  @Column({
-    unique: true,
-  })
+  @Column({})
   name: string;
 
   @Column({ type: 'text' })
@@ -47,18 +40,12 @@ export class Shop extends Base {
   @Column()
   closingTime: string;
 
-  @Column()
-  sellerId: string;
-
-  @OneToOne(() => User, (user) => user.shop)
-  @JoinColumn()
-  owner: User;
+  @OneToOne(() => User, (user) => user.shopId)
+  ownerId: User;
 
   @OneToOne(() => ShopImage, (shopImage) => shopImage.shopId)
   image: ShopImage;
 
   @OneToMany(() => Product, (product) => product.shopId)
   products: Product[];
-
-  // branches        Branch[]
 }
