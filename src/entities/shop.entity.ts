@@ -7,6 +7,14 @@ import { User } from './user.entity';
 @Entity('shops')
 @Index(['name', 'location'], { unique: true })
 export class Shop extends Base {
+  @Column({
+    unique: true,
+  })
+  email: string;
+
+  @Column()
+  password: string;
+
   @Column({})
   name: string;
 

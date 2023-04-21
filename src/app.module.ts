@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
 import { ShopModule } from './shop/shop.module';
 import { UserModule } from './user/user.module';
+import { ShopAuthModule } from './shop-auth/shop-auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UserModule } from './user/user.module';
     ProductModule,
     ShopModule,
     TypeOrmModule.forRoot(config),
+    ShopAuthModule,
   ],
 })
 export class AppModule {}
