@@ -14,6 +14,10 @@ export class RefreshShopJwtStrategy extends PassportStrategy(
   }
 
   async validate(payload: any) {
-    return { user: payload.sub, username: payload.username };
+    return {
+      id: payload.id,
+      name: payload.name,
+      shopCode: payload.shopCode,
+    };
   }
 }

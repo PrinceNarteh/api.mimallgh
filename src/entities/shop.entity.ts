@@ -10,7 +10,7 @@ export class Shop extends Base {
   @Column({
     unique: true,
   })
-  email: string;
+  shopCode: string;
 
   @Column()
   password: string;

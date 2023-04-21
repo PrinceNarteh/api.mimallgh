@@ -2,19 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Shop } from 'src/entities/shop.entity';
-
+import { ShopService } from 'src/shop/shop.service';
 
 @Injectable()
 export class ShopAuthService {
   constructor(
-    private readonly userService: UserService,
+    private readonly shopService: ShopService,
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string) {
-    const user = await this.userService.findOneWithUserName(username);
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...result } = user;
+  async validateShop(shopCode: string, password: string) {
+    const shop = await this.shopService.findShopByShopCode(shopCode);
+    if (shop && (await bcrypt.compare(password, shop.password))) {
+      const { password, ...result } = shop;
       return result;
     }
     return null;
@@ -22,10 +22,9 @@ export class ShopAuthService {
 
   async login(shop: Shop) {
     const payload = {
-      username: shop.email,
-      sub: {
-        name: shop.name,
-      },
+      id: shop.id,
+      name: shop.name,
+      shopCode: shop.shopCode,
     };
 
     return {
@@ -37,10 +36,9 @@ export class ShopAuthService {
 
   async refreshToken(shop: Shop) {
     const payload = {
-      username: shop.email,
-      sub: {
-        name: shop.name,
-      },
+      id: shop.id,
+      name: shop.name,
+      shopCode: shop.shopCode,
     };
 
     return {

@@ -22,6 +22,10 @@ export class ShopService {
     return this.shopRepository.findOne({ where: { id } });
   }
 
+  async findShopByShopCode(shopCode: string): Promise<Shop | null> {
+    return this.shopRepository.findOne({ where: { shopCode } });
+  }
+
   async shops(params: FindManyOptions<Shop>): Promise<Shop[]> {
     const { skip, take, where, order, select } = params;
     return this.shopRepository.find({
