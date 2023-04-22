@@ -37,25 +37,10 @@ export class ShopService {
     });
   }
 
-  async createShop(user: User, data: CreateShopDto) {
+  async createShop(data: CreateShopDto) {
     try {
-      const owner = await this.userService.user(user.id);
-      if (!owner) {
-        throw new NotFoundException('User not found');
-      }
-
-      let shop = this.shopRepository.create({
-        ...data,
-        ownerId: owner,
-      });
-
+      const shop = this.shopRepository.create(data);
       await this.shopRepository.save(shop);
-
-      await this.userService.updateUser(owner.id, {
-        role: 'seller',
-        shopId: shop,
-      });
-
       return shop;
     } catch (error) {
       console.log(error);

@@ -8,15 +8,12 @@ import {
 } from 'class-validator';
 
 export class CreateShopDto {
-  @IsEmail()
-  email: string;
+  @IsString()
+  name: string;
 
   @IsString()
   @MinLength(6)
   password: string;
-
-  @IsString()
-  name: string;
 
   @IsString()
   description: string;

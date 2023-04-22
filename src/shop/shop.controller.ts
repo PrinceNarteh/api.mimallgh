@@ -27,10 +27,9 @@ export class ShopController {
     return this.shopService.shop(shopId);
   }
 
-  @UseGuards(JwtGuard)
   @Post()
-  async createShop(@Request() req, @Body() data: CreateShopDto) {
-    return this.shopService.createShop(req.user, data);
+  async createShop(data: CreateShopDto) {
+    return this.shopService.createShop(data);
   }
 
   @Patch(':shopId')

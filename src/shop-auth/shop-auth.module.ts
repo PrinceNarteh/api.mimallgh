@@ -1,29 +1,34 @@
 import { Module } from '@nestjs/common';
-import { ShopAuthService } from './shop-auth.service';
-import { ShopAuthController } from './shop-auth.controller';
-import { ShopJwtStrategy } from './strategies/jwt-strategy';
-import { ShopLocalGuard } from './guards/local-auth.guard';
-import { ShopService } from 'src/shop/shop.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
-import { Shop } from 'src/entities/shop.entity';
-import { RefreshShopJwtStrategy } from './strategies/refreshToken.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/entities/user.entity';
+import { UserImage } from 'src/entities/userImage.entity';
+import { UserService } from 'src/user/user.service';
+import { AuthController } from './shop-auth.controller';
+import { AuthService } from './shop-auth.service';
+import { JwtStrategy } from './strategies/jwt-strategy';
+import { LocalStrategy } from './strategies/local-strategy';
+import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
+import { UserModule } from 'src/user/user.module';
+import { ShopModule } from 'src/shop/shop.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Shop]),
+    TypeOrmModule.forFeature([User, UserImage]),
     JwtModule.register({
       secret: `${process.env.jwt_secret}`,
       signOptions: { expiresIn: '15m' },
     }),
+    ShopModule,
   ],
   providers: [
-    ShopService,
-    ShopLocalGuard,
-    ShopJwtStrategy,
-    RefreshShopJwtStrategy,
-    ShopAuthService,
+    AuthService,
+    UserService,
+    LocalStrategy,
+    JwtStrategy,
+    RefreshJwtStrategy,
+    UserService,
   ],
-  controllers: [ShopAuthController],
+  controllers: [AuthController],
 })
 export class ShopAuthModule {}

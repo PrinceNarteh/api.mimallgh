@@ -1,8 +1,21 @@
-import { Column, Entity, Index, OneToMany, OneToOne } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { Base } from './base/baseEntity';
 import { Product } from './product.entity';
 import { ShopImage } from './shopImage.entity';
 import { User } from './user.entity';
+import { customAlphabet } from 'nanoid/async';
+import * as bcrypt from 'bcrypt';
+
+const nanoid = customAlphabet(
+  'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+);
 
 @Entity('shops')
 @Index(['name', 'location'], { unique: true })
@@ -15,7 +28,10 @@ export class Shop extends Base {
   @Column()
   password: string;
 
-  @Column({})
+  @Column()
+  plainPassword: string;
+
+  @Column()
   name: string;
 
   @Column({ type: 'text' })
@@ -56,4 +72,12 @@ export class Shop extends Base {
 
   @OneToMany(() => Product, (product) => product.shopId)
   products: Product[];
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.shopCode = await nanoid(10);
+    const genPassword = await nanoid(10);
+    this.password = await bcrypt.hash(genPassword, 12);
+    this.plainPassword = genPassword;
+  }
 }

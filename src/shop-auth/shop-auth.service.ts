@@ -1,45 +1,68 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
-import { Shop } from 'src/entities/shop.entity';
+import { User } from 'src/entities/user.entity';
+import { JwtService } from '@nestjs/jwt';
 import { ShopService } from 'src/shop/shop.service';
 
 @Injectable()
-export class ShopAuthService {
+export class AuthService {
   constructor(
     private readonly shopService: ShopService,
     private jwtService: JwtService,
   ) {}
 
-  async validateShop(shopCode: string, password: string) {
-    const shop = await this.shopService.findShopByShopCode(shopCode);
-    if (shop && (await bcrypt.compare(password, shop.password))) {
-      const { password, ...result } = shop;
+  async validateUser(emailOrPhoneNumber: string, password: string) {
+    const user = await this.shopService.findShopByShopCode(emailOrPhoneNumber);
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const { password, ...result } = user;
       return result;
     }
     return null;
   }
 
-  async login(shop: Shop) {
-    const payload = {
-      id: shop.id,
-      name: shop.name,
-      shopCode: shop.shopCode,
-    };
+  async login(user: User) {
+    let payload: object;
+
+    if (user.role === 'seller') {
+      payload = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        shopId: user.shopId,
+      };
+    } else {
+      payload = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      };
+    }
 
     return {
-      ...shop,
+      ...user,
       accessToken: this.jwtService.sign(payload),
       refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
     };
   }
 
-  async refreshToken(shop: Shop) {
-    const payload = {
-      id: shop.id,
-      name: shop.name,
-      shopCode: shop.shopCode,
-    };
+  async refreshToken(user: User) {
+    let payload: object;
+
+    if (user.role === 'seller') {
+      payload = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        shopId: user.shopId,
+      };
+    } else {
+      payload = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      };
+    }
 
     return {
       accessToken: this.jwtService.sign(payload),

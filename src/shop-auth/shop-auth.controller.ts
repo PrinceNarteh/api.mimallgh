@@ -1,31 +1,31 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { ShopRefreshJwtGuard } from './guards/refresh-jwt-auth.guard';
-import { CreateShopDto } from 'src/shop/dto/shopDto';
-import { ShopLocalGuard } from './guards/local-auth.guard';
-import { ShopAuthService } from './shop-auth.service';
-import { ShopService } from 'src/shop/shop.service';
+import { CreateUserDto } from 'src/user/dto/userDto';
+import { UserService } from 'src/user/user.service';
+import { AuthService } from './shop-auth.service';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RefreshJwtGuard } from './guards/refresh-jwt-auth.guard';
 
 @Controller('shop-auth')
-export class ShopAuthController {
+export class AuthController {
   constructor(
-    private shopAuthService: ShopAuthService,
-    private shopService: ShopService,
+    private authService: AuthService,
+    private userService: UserService,
   ) {}
 
-  @UseGuards(ShopLocalGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req) {
-    return await this.shopAuthService.login(req.shop);
+    return await this.authService.login(req.user);
   }
 
   @Post('register')
-  async register(@Request() req, @Body() createShopDto: CreateShopDto) {
-    return await this.shopService.createShop(req.shop, createShopDto);
+  async registerUser(@Body() createUserDto: CreateUserDto) {
+    return await this.userService.createUser(createUserDto);
   }
 
-  @UseGuards(ShopRefreshJwtGuard)
+  @UseGuards(RefreshJwtGuard)
   @Post('refresh')
   async refreshToken(@Request() req) {
-    return this.shopAuthService.refreshToken(req.shop);
+    return this.authService.refreshToken(req.user);
   }
 }
