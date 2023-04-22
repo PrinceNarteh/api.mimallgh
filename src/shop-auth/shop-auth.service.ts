@@ -6,13 +6,13 @@ import { JwtService } from '@nestjs/jwt';
 import { ShopService } from 'src/shop/shop.service';
 
 @Injectable()
-export class AuthService {
+export class ShopAuthService {
   constructor(
     private readonly shopService: ShopService,
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(emailOrPhoneNumber: string, password: string) {
+  async validateShop(emailOrPhoneNumber: string, password: string) {
     const user = await this.shopService.findShopByShopCode(emailOrPhoneNumber);
     if (user && (await bcrypt.compare(password, user.password))) {
       const { password, ...result } = user;

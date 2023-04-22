@@ -5,10 +5,10 @@ import { User } from 'src/entities/user.entity';
 import { UserImage } from 'src/entities/userImage.entity';
 import { UserService } from 'src/user/user.service';
 import { AuthController } from './shop-auth.controller';
-import { AuthService } from './shop-auth.service';
-import { JwtStrategy } from './strategies/jwt-strategy';
-import { LocalStrategy } from './strategies/local-strategy';
-import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
+import { ShopAuthService } from './shop-auth.service';
+import { ShopJwtStrategy } from './strategies/jwt-strategy';
+import { ShopLocalStrategy } from './strategies/local-strategy';
+import { ShopRefreshJwtStrategy } from './strategies/refreshToken.strategy';
 import { UserModule } from 'src/user/user.module';
 import { ShopModule } from 'src/shop/shop.module';
 
@@ -22,11 +22,11 @@ import { ShopModule } from 'src/shop/shop.module';
     ShopModule,
   ],
   providers: [
-    AuthService,
+    ShopAuthService,
     UserService,
-    LocalStrategy,
-    JwtStrategy,
-    RefreshJwtStrategy,
+    ShopLocalStrategy,
+    ShopJwtStrategy,
+    ShopRefreshJwtStrategy,
     UserService,
   ],
   controllers: [AuthController],
