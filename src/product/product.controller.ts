@@ -3,20 +3,19 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
-import { ShopService } from 'src/shop/shop.service';
+import { LocalShopAuthGuard } from 'src/shop-auth/guards/local-auth.guard';
 import { CreateProductDto, UpdateProductDto } from './dto/productDto';
 import { ProductService } from './product.service';
 
 @Controller('products')
 export class ProductController {
-  constructor(
-    private readonly productService: ProductService, // private readonly shopService: ShopService,
-  ) {}
+  constructor(private readonly productService: ProductService) {}
 
   @Get()
   async allProducts() {
@@ -28,32 +27,30 @@ export class ProductController {
     return this.productService.product(productId);
   }
 
+  @UseGuards(LocalShopAuthGuard)
   @Post()
-  async createProduct(@Body() createProductDto: CreateProductDto) {
-    // const shop = await this.shopService.shop('');
-
-    // if (!shop) {
-    //   return new NotFoundException('Shop not found');
-    // }
-
-    console.log(createProductDto);
-
-    const data = {
-      ...createProductDto,
-      // shop,
-    };
-
-    return createProductDto;
+  async createProduct(
+    @Request() req,
+    @Body() createProductDto: CreateProductDto,
+  ) {
+    return this.productService.createProduct(req.user, createProductDto);
   }
 
+  @UseGuards(LocalShopAuthGuard)
   @Patch(':productId')
   async updateProduct(
+    @Request() req,
     @Param('productId') productId: string,
     @Body() createProductDto: UpdateProductDto,
   ) {
-    return this.productService.updateProduct(productId, createProductDto);
+    return this.productService.updateProduct(
+      req.user,
+      productId,
+      createProductDto,
+    );
   }
 
+  @UseGuards(LocalShopAuthGuard)
   @Delete(':productId')
   async deleteProduct(@Param('productId') productId: string) {
     return this.productService.deleteProduct(productId);

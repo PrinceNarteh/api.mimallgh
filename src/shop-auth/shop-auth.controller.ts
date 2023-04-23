@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { CreateShopDto } from 'src/shop/dto/shopDto';
 import { ShopService } from 'src/shop/shop.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+import { LocalShopAuthGuard } from './guards/local-auth.guard';
 import { RefreshJwtGuard } from './guards/refresh-jwt-auth.guard';
 import { ShopAuthService } from './shop-auth.service';
 
@@ -12,7 +12,7 @@ export class AuthController {
     private shopService: ShopService,
   ) {}
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalShopAuthGuard)
   @Post('login')
   async login(@Request() req) {
     return await this.shopAuthService.login(req.user);
