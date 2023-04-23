@@ -1,10 +1,9 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
-import { Repository, FindManyOptions } from 'typeorm';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateProductDto, UpdateProductDto } from './dto/productDto';
-import { Product } from '../entities/product.entity';
 import { Shop } from 'src/entities/shop.entity';
-import { ShopService } from 'src/shop/shop.service';
+import { FindManyOptions, Repository } from 'typeorm';
+import { Product } from '../entities/product.entity';
+import { CreateProductDto, UpdateProductDto } from './dto/productDto';
 
 @Injectable()
 export class ProductService {
@@ -48,7 +47,13 @@ export class ProductService {
     return this.productRepo.update({ id: id }, { ...data });
   }
 
-  async deleteProduct(id: string) {
+  async deleteProduct(shop: Shop, id: string) {
+    const product = await this.productRepo.findOne({ where: { id } });
+    if (product && shop.id !== product.shopId.id) {
+      throw new ForbiddenException(
+        'You are not permitted to perform this action',
+      );
+    }
     return this.productRepo.delete({ id });
   }
 }

@@ -4,7 +4,10 @@ import { Strategy } from 'passport-local';
 import { ShopAuthService } from '../shop-auth.service';
 
 @Injectable()
-export class ShopLocalStrategy extends PassportStrategy(Strategy) {
+export class ShopLocalStrategy extends PassportStrategy(
+  Strategy,
+  'shop-local',
+) {
   constructor(private authService: ShopAuthService) {
     super({
       usernameField: 'shopCode',

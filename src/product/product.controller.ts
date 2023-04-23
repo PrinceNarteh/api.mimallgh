@@ -52,7 +52,7 @@ export class ProductController {
 
   @UseGuards(LocalShopAuthGuard)
   @Delete(':productId')
-  async deleteProduct(@Param('productId') productId: string) {
-    return this.productService.deleteProduct(productId);
+  async deleteProduct(@Request() req, @Param('productId') productId: string) {
+    return this.productService.deleteProduct(req.user, productId);
   }
 }

@@ -6,7 +6,7 @@ import { RefreshJwtGuard } from './guards/refresh-jwt-auth.guard';
 import { ShopAuthService } from './shop-auth.service';
 
 @Controller('shop-auth')
-export class AuthController {
+export class ShopAuthController {
   constructor(
     private shopAuthService: ShopAuthService,
     private shopService: ShopService,
