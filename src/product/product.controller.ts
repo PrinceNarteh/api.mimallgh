@@ -33,8 +33,7 @@ export class ProductController {
     @Request() req,
     @Body() createProductDto: CreateProductDto,
   ) {
-    console.log(req.user);
-    return this.productService.createProduct(req.user, createProductDto);
+    return this.productService.createProduct(req.user.id, createProductDto);
   }
 
   @UseGuards(ShopJwtGuard)

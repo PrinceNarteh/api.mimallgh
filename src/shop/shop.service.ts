@@ -39,7 +39,10 @@ export class ShopService {
 
   async createShop(data: CreateShopDto) {
     try {
-      const shop = this.shopRepository.create(data);
+      const shop = this.shopRepository.create({
+        ...data,
+        products: [],
+      });
       await this.shopRepository.save(shop);
       return shop;
     } catch (error) {

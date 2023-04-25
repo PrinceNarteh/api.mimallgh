@@ -40,7 +40,12 @@ export class ProductService {
   }
 
   async createProduct(shopId: string, data: CreateProductDto) {
-    const shop = await this.shopRepo.findOne({ where: { id: shopId } });
+    const shop = await this.shopRepo.findOne({
+      where: { id: shopId },
+      relations: {
+        products: true,
+      },
+    });
     if (!shop) {
       throw new NotFoundException('Shop not found');
     }
@@ -56,13 +61,12 @@ export class ProductService {
 
     const product = this.productRepo.create({
       ...data,
+      images: imageArr,
     });
-
-    product.images = imageArr;
 
     await this.productRepo.save(product);
 
-    shop.products.push(product);
+    shop.products = [...shop.products, product];
 
     await this.shopRepo.save(shop);
 

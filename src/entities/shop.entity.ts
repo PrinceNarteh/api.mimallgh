@@ -67,7 +67,9 @@ export class Shop extends Base {
   @OneToOne(() => ShopImage, (shopImage) => shopImage.shopId)
   image: ShopImage;
 
-  @OneToMany(() => Product, (product) => product.shop)
+  @OneToMany(() => Product, (product) => product.shop, {
+    onDelete: 'CASCADE',
+  })
   products: Product[];
 
   @BeforeInsert()

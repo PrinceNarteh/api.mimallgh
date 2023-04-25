@@ -4,6 +4,6 @@ import { Product } from './product.entity';
 
 @Entity('product_images')
 export class ProductImage extends BaseImage {
-  @ManyToOne(() => ProductImage, (product) => product.images)
-  images: Product;
+  @ManyToOne(() => Product, (product) => product.images)
+  image: Product;
 }

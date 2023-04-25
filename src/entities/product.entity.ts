@@ -56,7 +56,7 @@ export class Product extends Base {
   // })
   // rating: number[];
 
-  @OneToMany(() => ProductImage, (productImage) => productImage.images, {
+  @OneToMany(() => ProductImage, (productImage) => productImage.image, {
     onDelete: 'CASCADE',
   })
   images: ProductImage[];
