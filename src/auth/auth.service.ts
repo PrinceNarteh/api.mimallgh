@@ -23,22 +23,11 @@ export class AuthService {
   }
 
   async login(user: User) {
-    let payload: object;
-
-    if (user.role === 'seller') {
-      payload = {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        shopId: user.shopId,
-      };
-    } else {
-      payload = {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-      };
-    }
+    let payload = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
 
     return {
       ...user,
@@ -48,22 +37,11 @@ export class AuthService {
   }
 
   async refreshToken(user: User) {
-    let payload: object;
-
-    if (user.role === 'seller') {
-      payload = {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        shopId: user.shopId,
-      };
-    } else {
-      payload = {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-      };
-    }
+    let payload = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
 
     return {
       accessToken: this.jwtService.sign(payload),

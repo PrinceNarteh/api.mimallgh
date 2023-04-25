@@ -1,14 +1,20 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProductImage } from 'src/entities/productImage.entity';
 import { Shop } from 'src/entities/shop.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { Product } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from './dto/productDto';
-import { ProductImage } from 'src/entities/productImage.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
+    @InjectRepository(Shop)
+    private readonly shopRepo: Repository<Shop>,
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
     @InjectRepository(ProductImage)
@@ -33,7 +39,12 @@ export class ProductService {
     });
   }
 
-  async createProduct(shop: Shop, data: CreateProductDto) {
+  async createProduct(shopId: string, data: CreateProductDto) {
+    const shop = await this.shopRepo.findOne({ where: { id: shopId } });
+    if (!shop) {
+      throw new NotFoundException('Shop not found');
+    }
+
     const { images } = data;
     const imageArr = [];
 
@@ -45,11 +56,15 @@ export class ProductService {
 
     const product = this.productRepo.create({
       ...data,
-      shopId: shop,
-      images: imageArr,
     });
 
+    product.images = imageArr;
+
     await this.productRepo.save(product);
+
+    shop.products.push(product);
+
+    await this.shopRepo.save(shop);
 
     return product;
   }
@@ -65,7 +80,7 @@ export class ProductService {
 
   async deleteProduct(shop: Shop, id: string) {
     const product = await this.productRepo.findOne({ where: { id } });
-    if (product && shop.id !== product.shopId.id) {
+    if (product && shop.id !== product.shop.id) {
       throw new ForbiddenException(
         'You are not permitted to perform this action',
       );

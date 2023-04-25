@@ -40,8 +40,8 @@ export class Shop extends Base {
   @Column()
   location: string;
 
-  @Column({ nullable: true })
-  address: string;
+  @Column()
+  mapDirection: string;
 
   @Column()
   phoneNumber: string;
@@ -64,13 +64,10 @@ export class Shop extends Base {
   @Column()
   closingTime: string;
 
-  @OneToOne(() => User, (user) => user.shopId)
-  ownerId: User;
-
   @OneToOne(() => ShopImage, (shopImage) => shopImage.shopId)
   image: ShopImage;
 
-  @OneToMany(() => Product, (product) => product.shopId)
+  @OneToMany(() => Product, (product) => product.shop)
   products: Product[];
 
   @BeforeInsert()

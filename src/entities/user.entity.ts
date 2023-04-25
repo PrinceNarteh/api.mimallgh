@@ -83,10 +83,6 @@ export class User extends Base {
   })
   level: string;
 
-  @OneToOne(() => Shop, (shop) => shop.ownerId)
-  @JoinColumn()
-  shopId: Shop;
-
   @BeforeInsert()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 12);

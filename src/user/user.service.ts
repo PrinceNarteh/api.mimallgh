@@ -33,9 +33,6 @@ export class UserService {
         { email: emailOrPhoneNumber },
         { phoneNumber: emailOrPhoneNumber },
       ],
-      relations: {
-        shopId: true,
-      },
     });
   }
 

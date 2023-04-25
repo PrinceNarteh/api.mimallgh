@@ -59,12 +59,10 @@ export class Product extends Base {
   @OneToMany(() => ProductImage, (productImage) => productImage.images, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
   images: ProductImage[];
 
   @ManyToOne(() => Shop, (shop) => shop.products, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'shop_id' })
-  shopId: Shop;
+  shop: Shop;
 }
