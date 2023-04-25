@@ -10,8 +10,15 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { ProductImage } from 'src/entities/productImage.entity';
 import { Shop } from 'src/entities/shop.entity';
+
+class ProductImageDto {
+  @IsString()
+  public_id: string;
+
+  @IsString()
+  secure_url: string;
+}
 
 export class CreateProductDto {
   @IsString()
@@ -60,8 +67,8 @@ export class CreateProductDto {
   rating: number[];
 
   @ValidateNested()
-  @Type(() => ProductImage)
-  images: ProductImage[];
+  @Type(() => ProductImageDto)
+  images: ProductImageDto[];
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}

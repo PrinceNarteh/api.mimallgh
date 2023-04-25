@@ -9,9 +9,9 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { LocalShopAuthGuard } from 'src/shop-auth/guards/local-auth.guard';
 import { CreateProductDto, UpdateProductDto } from './dto/productDto';
 import { ProductService } from './product.service';
+import { ShopJwtGuard } from 'src/shop-auth/guards/jwt-auth.guard';
 
 @Controller('products')
 export class ProductController {
@@ -27,16 +27,17 @@ export class ProductController {
     return this.productService.product(productId);
   }
 
-  @UseGuards(LocalShopAuthGuard)
+  @UseGuards(ShopJwtGuard)
   @Post()
   async createProduct(
     @Request() req,
     @Body() createProductDto: CreateProductDto,
   ) {
+    console.log(req.user);
     return this.productService.createProduct(req.user, createProductDto);
   }
 
-  @UseGuards(LocalShopAuthGuard)
+  @UseGuards(ShopJwtGuard)
   @Patch(':productId')
   async updateProduct(
     @Request() req,
@@ -50,7 +51,7 @@ export class ProductController {
     );
   }
 
-  @UseGuards(LocalShopAuthGuard)
+  @UseGuards(ShopJwtGuard)
   @Delete(':productId')
   async deleteProduct(@Request() req, @Param('productId') productId: string) {
     return this.productService.deleteProduct(req.user, productId);

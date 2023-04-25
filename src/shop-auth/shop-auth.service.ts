@@ -24,6 +24,7 @@ export class ShopAuthService {
     let payload = {
       id: shop.id,
       name: shop.name,
+      shopCode: shop.shopCode,
     };
 
     return {
@@ -37,6 +38,7 @@ export class ShopAuthService {
     let payload = {
       id: shop.id,
       name: shop.name,
+      shopCode: shop.shopCode,
     };
 
     return {

@@ -4,12 +4,15 @@ import { Shop } from 'src/entities/shop.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { Product } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from './dto/productDto';
+import { ProductImage } from 'src/entities/productImage.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
+    @InjectRepository(ProductImage)
+    private readonly productImgRepo: Repository<ProductImage>,
   ) {}
 
   async product(id: string) {
@@ -24,13 +27,26 @@ export class ProductService {
       where,
       order,
       select,
+      relations: {
+        images: true,
+      },
     });
   }
 
   async createProduct(shop: Shop, data: CreateProductDto) {
+    const { images } = data;
+    const imageArr = [];
+
+    for (let image of images) {
+      const res = this.productImgRepo.create(image);
+      await this.productImgRepo.save(res);
+      imageArr.push(res);
+    }
+
     const product = this.productRepo.create({
       ...data,
       shopId: shop,
+      images: imageArr,
     });
 
     await this.productRepo.save(product);

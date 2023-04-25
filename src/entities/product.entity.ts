@@ -19,7 +19,9 @@ export class Product extends Base {
   @Column()
   title: string;
 
-  @Column()
+  @Column({
+    type: 'longtext',
+  })
   description: string;
 
   @Column({
@@ -57,6 +59,7 @@ export class Product extends Base {
   @OneToMany(() => ProductImage, (productImage) => productImage.images, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   images: ProductImage[];
 
   @ManyToOne(() => Shop, (shop) => shop.products, {
