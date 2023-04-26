@@ -12,20 +12,20 @@ export class ShopAuthController {
     private shopService: ShopService,
   ) {}
 
+  @Post('register')
+  async registerShop(@Body() createShopDto: CreateShopDto) {
+    return await this.shopService.createShop(createShopDto);
+  }
+
   @UseGuards(ShopLocalAuthGuard)
   @Post('login')
   async login(@Request() req) {
     return await this.shopAuthService.login(req.user);
   }
 
-  @Post('register')
-  async registerShop(@Body() createShopDto: CreateShopDto) {
-    return await this.shopService.createShop(createShopDto);
-  }
-
   @UseGuards(ShopRefreshJwtGuard)
   @Post('refresh')
   async refreshToken(@Request() req) {
-    return this.shopAuthService.refreshToken(req.user);
+    return await this.shopAuthService.refreshToken(req.user);
   }
 }

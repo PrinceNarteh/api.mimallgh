@@ -21,6 +21,7 @@ export class ShopAuthService {
   }
 
   async login(shop: Shop) {
+    console.log(shop)
     let payload = {
       id: shop.id,
       name: shop.name,
@@ -35,6 +36,7 @@ export class ShopAuthService {
   }
 
   async refreshToken(shop: Shop) {
+    console.log(shop);
     let payload = {
       id: shop.id,
       name: shop.name,

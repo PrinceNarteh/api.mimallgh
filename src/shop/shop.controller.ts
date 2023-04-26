@@ -19,7 +19,11 @@ export class ShopController {
 
   @Get()
   async allShop() {
-    return this.shopService.shops({});
+    return this.shopService.shops({
+      relations: {
+        products: true,
+      },
+    });
   }
 
   @Get(':shopId')

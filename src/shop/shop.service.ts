@@ -14,7 +14,14 @@ export class ShopService {
   ) {}
 
   async shop(id: string): Promise<Shop | null> {
-    return this.shopRepository.findOne({ where: { id } });
+    return this.shopRepository.findOne({
+      where: { id },
+      relations: {
+        products: {
+          images: true,
+        },
+      },
+    });
   }
 
   async findShopByShopCode(shopCode: string): Promise<Shop | null> {
@@ -22,13 +29,14 @@ export class ShopService {
   }
 
   async shops(params: FindManyOptions<Shop>): Promise<Shop[]> {
-    const { skip, take, where, order, select } = params;
+    const { skip, take, where, order, select, relations } = params;
     return this.shopRepository.find({
       skip,
       take,
       where,
       order,
       select,
+      relations,
     });
   }
 

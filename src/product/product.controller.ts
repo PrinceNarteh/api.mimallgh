@@ -19,7 +19,11 @@ export class ProductController {
 
   @Get()
   async allProducts() {
-    return this.productService.products({});
+    return this.productService.products({
+      relations: {
+        images: true,
+      },
+    });
   }
 
   @Get(':productId')
@@ -41,12 +45,12 @@ export class ProductController {
   async updateProduct(
     @Request() req,
     @Param('productId') productId: string,
-    @Body() createProductDto: UpdateProductDto,
+    @Body() updateProductDto: Partial<CreateProductDto>,
   ) {
     return this.productService.updateProduct(
       req.user,
       productId,
-      createProductDto,
+      updateProductDto,
     );
   }
 
