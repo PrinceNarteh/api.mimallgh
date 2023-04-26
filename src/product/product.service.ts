@@ -96,9 +96,6 @@ export class ProductService {
       throw new NotFoundException('Product not found');
     }
 
-    console.log(product);
-    console.log({ productShopId: product.shop.id, shop: shop });
-
     if (product.shop.id !== shop.id) {
       throw new ForbiddenException(
         'You are not permitted to perform this action',
@@ -125,7 +122,11 @@ export class ProductService {
 
     const instance = await this.productRepo.findOne({
       where: { id: productId },
+      relations: {
+        images: true,
+      },
     });
+
     Object.assign(instance, newData);
     instance.save();
 

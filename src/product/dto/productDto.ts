@@ -5,6 +5,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Max,
   Min,
@@ -21,10 +22,6 @@ class ProductImageDto {
 }
 
 export class CreateProductDto {
-  @IsString()
-  @IsNotEmpty({ message: 'Shop ID is required' })
-  shopId: Shop;
-
   @IsString()
   @IsNotEmpty({ message: 'Title is required' })
   title: string;
@@ -61,6 +58,7 @@ export class CreateProductDto {
   )
   category: string;
 
+  @IsOptional()
   @Min(0, { each: true })
   @Max(5, { each: true })
   @IsInt()

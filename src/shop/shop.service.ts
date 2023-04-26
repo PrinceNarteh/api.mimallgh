@@ -41,7 +41,6 @@ export class ShopService {
   }
 
   async createShop(data: CreateShopDto) {
-    console.log(data);
     try {
       const shop = this.shopRepository.create({
         ...data,
@@ -50,7 +49,6 @@ export class ShopService {
       await this.shopRepository.save(shop);
       return shop;
     } catch (error) {
-      console.log(error);
       throw new BadRequestException(error.message);
     }
   }
