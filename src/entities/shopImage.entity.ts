@@ -5,6 +5,8 @@ import { Shop } from './shop.entity';
 @Entity('shop_images')
 export class ShopImage extends BaseImage {
   @OneToOne(() => Shop, (shop) => shop.image)
-  @JoinColumn()
+  @JoinColumn({
+    name: 'shop_id',
+  })
   shopId: Shop;
 }

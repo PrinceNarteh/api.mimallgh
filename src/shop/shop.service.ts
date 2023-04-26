@@ -1,15 +1,10 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 
-import { CreateShopDto, UpdateShopDto } from './dto/shopDto';
-import { Shop } from '../entities/shop.entity';
-import { User } from 'src/entities/user.entity';
 import { UserService } from 'src/user/user.service';
+import { Shop } from '../entities/shop.entity';
+import { CreateShopDto, UpdateShopDto } from './dto/shopDto';
 
 @Injectable()
 export class ShopService {
@@ -38,6 +33,7 @@ export class ShopService {
   }
 
   async createShop(data: CreateShopDto) {
+    console.log(data);
     try {
       const shop = this.shopRepository.create({
         ...data,

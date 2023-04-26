@@ -28,7 +28,7 @@ export class ShopController {
   }
 
   @Post()
-  async createShop(data: CreateShopDto) {
+  async createShop(@Body() data: CreateShopDto) {
     return this.shopService.createShop(data);
   }
 

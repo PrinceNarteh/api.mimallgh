@@ -12,10 +12,6 @@ export class CreateShopDto {
   name: string;
 
   @IsString()
-  @MinLength(6)
-  password: string;
-
-  @IsString()
   description: string;
 
   @IsString()

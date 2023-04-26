@@ -22,7 +22,16 @@ export class ProductService {
   ) {}
 
   async product(id: string) {
-    return this.productRepo.findOne({ where: { id } });
+    const product = await this.productRepo.findOne({
+      where: { id },
+      relations: {
+        images: true,
+      },
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+    return product;
   }
 
   async products(params: FindManyOptions<Product>) {
@@ -73,13 +82,55 @@ export class ProductService {
     return product;
   }
 
-  async updateProduct(shop: Shop, id: string, data: UpdateProductDto) {
+  async updateProduct(
+    shopId: string,
+    productId: string,
+    data: UpdateProductDto,
+  ) {
+    const shop = await this.shopRepo.findOne({
+      where: { id: shopId },
+      relations: {
+        products: true,
+      },
+    });
+    if (!shop) {
+      throw new NotFoundException('Shop not found');
+    }
+
+    const product = await this.productRepo.findOne({
+      where: { id: productId },
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
     if (shop.id !== data.shopId.id) {
       throw new ForbiddenException(
         'You are not permitted to perform this action',
       );
     }
-    return this.productRepo.update({ id: id }, { ...data });
+
+    for (let image of product.images) {
+      await this.productImgRepo.delete(image.id);
+    }
+
+    const { images } = data;
+    const imageArr = [];
+
+    for (let image of images) {
+      const res = this.productImgRepo.create(image);
+      await this.productImgRepo.save(res);
+      imageArr.push(res);
+    }
+
+    const newData = {
+      ...data,
+      images: imageArr,
+    };
+
+    await this.productRepo.update({ id: productId }, { ...newData });
+
+    return product;
   }
 
   async deleteProduct(shop: Shop, id: string) {
