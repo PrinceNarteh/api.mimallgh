@@ -1,17 +1,14 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
+  Param,
   Patch,
   Post,
-  Param,
-  Body,
-  UseGuards,
-  Request,
 } from '@nestjs/common';
+import { CreateShopDto } from './dto/shopDto';
 import { ShopService } from './shop.service';
-import { CreateShopDto, UpdateShopDto } from './dto/shopDto';
-import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('shops')
 export class ShopController {
@@ -19,7 +16,7 @@ export class ShopController {
 
   @Get()
   async allShop() {
-    return this.shopService.shops({
+    return await this.shopService.shops({
       relations: {
         products: true,
       },
@@ -39,7 +36,7 @@ export class ShopController {
   @Patch(':shopId')
   async updateShop(
     @Param('shopId') shopId: string,
-    @Body() data: UpdateShopDto,
+    @Body() data: Partial<CreateShopDto>,
   ) {
     return this.shopService.updateShop(shopId, data);
   }

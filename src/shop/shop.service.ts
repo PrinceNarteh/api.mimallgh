@@ -1,8 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 
-import { UserService } from 'src/user/user.service';
 import { Shop } from '../entities/shop.entity';
 import { CreateShopDto, UpdateShopDto } from './dto/shopDto';
 
@@ -10,11 +13,10 @@ import { CreateShopDto, UpdateShopDto } from './dto/shopDto';
 export class ShopService {
   constructor(
     @InjectRepository(Shop) private readonly shopRepository: Repository<Shop>,
-    private readonly userService: UserService,
   ) {}
 
   async shop(id: string): Promise<Shop | null> {
-    return this.shopRepository.findOne({
+    const shop = await this.shopRepository.findOne({
       where: { id },
       relations: {
         products: {
@@ -22,6 +24,11 @@ export class ShopService {
         },
       },
     });
+
+    if (!shop) {
+      throw new NotFoundException('Shop Not Found');
+    }
+    return shop;
   }
 
   async findShopByShopCode(shopCode: string): Promise<Shop | null> {
@@ -30,7 +37,7 @@ export class ShopService {
 
   async shops(params: FindManyOptions<Shop>): Promise<Shop[]> {
     const { skip, take, where, order, select, relations } = params;
-    return this.shopRepository.find({
+    return await this.shopRepository.find({
       skip,
       take,
       where,
@@ -53,8 +60,13 @@ export class ShopService {
     }
   }
 
-  async updateShop(id: string, data: UpdateShopDto) {
-    return this.shopRepository.update({ id }, { ...data });
+  async updateShop(shopId: string, data: UpdateShopDto) {
+    const shop = await this.shop(shopId);
+    if (!shop) {
+      throw new NotFoundException('Shop not found');
+    }
+    await this.shopRepository.update({ id: shopId }, { ...data });
+    return this.shop(shopId);
   }
 
   async deleteShop(id: string) {
