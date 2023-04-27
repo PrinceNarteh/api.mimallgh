@@ -61,8 +61,6 @@ export class Product extends Base {
   })
   images: ProductImage[];
 
-  @ManyToOne(() => Shop, (shop) => shop.products, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => Shop, (shop) => shop.products)
   shop: Shop;
 }

@@ -1,8 +1,16 @@
-import { BeforeInsert, Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { Base } from './base/baseEntity';
 import * as bcrypt from 'bcrypt';
 import { UserImage } from './userImage.entity';
 import { Shop } from './shop.entity';
+import { Order } from './order.entity';
 
 export type UserRoleType = 'admin' | 'user' | 'seller';
 
@@ -82,6 +90,9 @@ export class User extends Base {
     nullable: true,
   })
   level: string;
+
+  @OneToMany(() => Order, (order) => order.userId)
+  orders: Order[];
 
   @BeforeInsert()
   async hashPassword() {
