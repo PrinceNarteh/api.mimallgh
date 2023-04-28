@@ -5,10 +5,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
+import { UserImage } from 'src/entities/userImage.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dto/userDto';
-import { UserImageService } from 'src/user/user_image.service';
-import { UserImage } from 'src/entities/userImage.entity';
 
 @Injectable()
 export class UserService {
@@ -76,8 +75,31 @@ export class UserService {
     }
   }
 
-  async updateUser(id: string, data: UpdateUserDto) {
-    return this.userRepository.update({ id }, { ...data });
+  async updateUser(userId: string, data: UpdateUserDto) {
+    let user = await this.user(userId);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const { image, ...res } = data;
+
+    if (image) {
+      await this.userImgRepo.delete({ id: data.image.id });
+      const img = this.userImgRepo.create(image);
+      await this.userImgRepo.save(img);
+      const newData = {
+        ...res,
+        image: img,
+      };
+      await this.userRepository.update({ id: userId }, newData);
+      user = await this.user(userId);
+      return user;
+    } else {
+      await this.userRepository.update({ id: userId }, data);
+      user = await this.user(userId);
+      return user;
+    }
   }
 
   async deleteUser(id: string) {

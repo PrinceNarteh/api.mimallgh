@@ -7,7 +7,16 @@ export class UserController {
 
   @Get()
   async findAll() {
-    return 'All users';
+    return this.userService.users({});
+  }
+
+  @Get()
+  async findAllByRole() {
+    return this.userService.users({
+      where: {
+        role: 'admin',
+      },
+    });
   }
 
   @Get(':userId')

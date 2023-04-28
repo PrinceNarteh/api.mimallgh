@@ -1,18 +1,10 @@
-import {
-  BeforeInsert,
-  Column,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  OneToOne,
-} from 'typeorm';
-import { Base } from './base/baseEntity';
 import * as bcrypt from 'bcrypt';
-import { UserImage } from './userImage.entity';
-import { Shop } from './shop.entity';
+import { BeforeInsert, Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Base } from './base/baseEntity';
 import { Order } from './order.entity';
+import { UserImage } from './userImage.entity';
 
-export type UserRoleType = 'admin' | 'user' | 'seller';
+export type UserRoleType = 'admin' | 'user';
 
 export type UserLevelType =
   | 'level_one'
@@ -77,12 +69,8 @@ export class User extends Base {
   })
   active: boolean;
 
-  @Column({
-    type: 'enum',
-    enum: ['admin', 'user', 'seller'],
-    default: 'user',
-  })
-  role: string;
+  @Column()
+  role: 'admin' | 'user';
 
   @Column({
     type: 'enum',
