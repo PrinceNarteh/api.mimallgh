@@ -93,4 +93,8 @@ export class OrdersService {
 
     return order;
   }
+
+  async deleteOrder(orderId: string) {
+    return await this.orderRepo.delete(orderId);
+  }
 }

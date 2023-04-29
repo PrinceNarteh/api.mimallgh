@@ -1,8 +1,8 @@
+import { IsPositive, IsString, ValidateNested } from 'class-validator';
+
 // export class OrderItem extends Base {
 //   @Column()
 //   productId: string;
-
-import { IsPositive, IsString, ValidateNested } from 'class-validator';
 
 //   @Column()
 //   name: string;
@@ -32,6 +32,9 @@ class CreateOrderItemDto {
 
   @IsString()
   shopName: string;
+
+  @IsString()
+  shopId: string;
 }
 
 export class CreateOrderDto {

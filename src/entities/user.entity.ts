@@ -69,8 +69,12 @@ export class User extends Base {
   })
   active: boolean;
 
-  @Column()
-  role: 'admin' | 'user';
+  @Column({
+    type: 'enum',
+    enum: ['admin', 'user'],
+    default: 'user',
+  })
+  role: string;
 
   @Column({
     type: 'enum',

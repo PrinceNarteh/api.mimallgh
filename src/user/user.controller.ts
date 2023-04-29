@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Controller, Get, Param, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -10,11 +10,11 @@ export class UserController {
     return this.userService.users({});
   }
 
-  @Get()
-  async findAllByRole() {
+  @Get('/role/:role')
+  async findAllByRole(@Param('role') role: string) {
     return this.userService.users({
       where: {
-        role: 'admin',
+        role,
       },
     });
   }
