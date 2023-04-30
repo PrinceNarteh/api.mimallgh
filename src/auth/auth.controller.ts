@@ -19,13 +19,13 @@ export class AuthController {
   }
 
   @Post('register')
-  async registerUser(@Body() createUserDto: CreateUserDto) {
+  async registerShop(@Body() createUserDto: CreateUserDto) {
     return await this.userService.createUser(createUserDto);
   }
 
   @UseGuards(RefreshJwtGuard)
   @Post('refresh')
   async refreshToken(@Request() req) {
-    return this.authService.refreshToken(req.user);
+    return await this.authService.refreshToken(req.user);
   }
 }

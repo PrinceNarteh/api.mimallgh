@@ -27,12 +27,17 @@ export class UserService {
   }
 
   async findOneByEmailOrPhoneNumber(emailOrPhoneNumber: string) {
-    return this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: [
         { email: emailOrPhoneNumber },
         { phoneNumber: emailOrPhoneNumber },
       ],
     });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
   async users(params: FindManyOptions<User>) {
