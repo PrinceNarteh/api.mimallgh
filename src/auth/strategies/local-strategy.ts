@@ -4,18 +4,21 @@ import { Strategy } from 'passport-local';
 import { AuthService } from '../auth.service';
 
 @Injectable()
-export class ShopLocalStrategy extends PassportStrategy(Strategy, 'local') {
-  constructor(private shopService: AuthService) {
+export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
+  constructor(private authService: AuthService) {
     super({
-      usernameField: 'shopCode',
+      usernameField: 'emailOrPhoneNumber',
     });
   }
 
-  async validate(shopCode: string, password: string) {
-    const shop = await this.shopService.validateUser(shopCode, password);
-    if (!shop) {
+  async validate(emailOrPhoneNumber: string, password: string) {
+    const user = await this.authService.validateUser(
+      emailOrPhoneNumber,
+      password,
+    );
+    if (!user) {
       throw new UnauthorizedException('Invalid Credentials');
     }
-    return shop;
+    return user;
   }
 }
