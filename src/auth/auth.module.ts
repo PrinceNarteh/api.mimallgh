@@ -9,7 +9,7 @@ import { LocalStrategy } from './strategies/local-strategy';
 import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
 
 @Module({
-  imports: [JwtModule.registerAsync(jwtConfig), UserModule],
+  imports: [JwtModule.register(jwtConfig), UserModule],
   providers: [AuthService, LocalStrategy, JwtStrategy, RefreshJwtStrategy],
   controllers: [AuthController],
 })

@@ -8,8 +8,6 @@ export class RefreshJwtGuard extends AuthGuard('jwt-refresh') {
   }
 
   handleRequest(err: any, user: any, info: any, context: any, status: any) {
-    console.log('errorGuard', err);
-    console.log(info);
     if (err || !user) {
       throw new HttpException(err.message, err.status);
     }

@@ -3,13 +3,13 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 export class RefreshJwtStrategy extends PassportStrategy(
   Strategy,
-  'jwt-refresh-user',
+  'jwt-refresh',
 ) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromBodyField('refresh'),
       ignoreExpiration: false,
-      secretOrKey: `${process.env.JWT_SECRET}`,
+      secretOrKey: `lHRqk48b01ueKau1u3CJvH2TozcWdSaEKaBGbBZO8Pg=`,
     });
   }
 

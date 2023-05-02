@@ -47,7 +47,6 @@ export class OrdersService {
   }
 
   async createOrder(user: User, data: CreateOrderDto) {
-    console.log(data);
     let userExists = await this.userService.user(user.id);
     if (!userExists) {
       throw new NotFoundException('User Not Found');

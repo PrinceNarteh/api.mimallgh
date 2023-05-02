@@ -1,15 +1,8 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModuleAsyncOptions } from '@nestjs/jwt';
+import { JwtModuleOptions } from '@nestjs/jwt';
 
-export const jwtConfig: JwtModuleAsyncOptions = {
-  imports: [ConfigModule],
-  inject: [ConfigService],
-  useFactory: (configService: ConfigService) => {
-    return {
-      secret: configService.get<string>('AUTH_JWT_SECRET'),
-      signOptions: {
-        expiresIn: '15m',
-      },
-    };
+export const jwtConfig: JwtModuleOptions = {
+  secret: 'lHRqk48b01ueKau1u3CJvH2TozcWdSaEKaBGbBZO8Pg=',
+  signOptions: {
+    expiresIn: '15m',
   },
 };
