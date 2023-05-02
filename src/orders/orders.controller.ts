@@ -11,6 +11,7 @@ import {
 import { OrdersService } from './orders.service';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateOrderDto } from './dto/orderDto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('orders')
 export class OrdersController {
@@ -34,7 +35,7 @@ export class OrdersController {
   @UseGuards(JwtGuard)
   @Post()
   async createOrder(@Request() req, @Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.createOrder(req, createOrderDto);
+    return this.orderService.createOrder(req.user, createOrderDto);
   }
 
   @Delete(':orderId')

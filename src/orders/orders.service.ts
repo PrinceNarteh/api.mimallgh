@@ -5,6 +5,7 @@ import { Order } from 'src/entities/order.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/orderDto';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class OrdersService {
@@ -20,6 +21,7 @@ export class OrdersService {
     return await this.orderRepo.find({
       relations: {
         items: true,
+        userId: true,
       },
     });
   }
@@ -44,9 +46,10 @@ export class OrdersService {
     });
   }
 
-  async createOrder(userId: string, data: CreateOrderDto) {
-    let user = await this.userService.user(userId);
-    if (!user) {
+  async createOrder(user: User, data: CreateOrderDto) {
+    console.log(data);
+    let userExists = await this.userService.user(user.id);
+    if (!userExists) {
       throw new NotFoundException('User Not Found');
     }
 
@@ -59,6 +62,7 @@ export class OrdersService {
 
     const order = this.orderRepo.create({
       ...data,
+      userId: userExists,
       items,
     });
 

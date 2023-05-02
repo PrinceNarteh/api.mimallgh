@@ -6,7 +6,7 @@ import { ShopAuthService } from '../shop-auth.service';
 @Injectable()
 export class ShopLocalStrategy extends PassportStrategy(
   Strategy,
-  'shop-local',
+  'local-shop',
 ) {
   constructor(private shopService: ShopAuthService) {
     super({

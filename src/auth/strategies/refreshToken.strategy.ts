@@ -3,7 +3,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 export class RefreshJwtStrategy extends PassportStrategy(
   Strategy,
-  'jwt-refresh',
+  'jwt-refresh-user',
 ) {
   constructor() {
     super({

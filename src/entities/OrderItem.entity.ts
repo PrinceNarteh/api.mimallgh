@@ -19,6 +19,9 @@ export class OrderItem extends Base {
   @Column()
   shopName: string;
 
+  @Column()
+  shopId: string;
+
   @ManyToOne(() => Order, (order) => order.items)
   order: Order;
 }

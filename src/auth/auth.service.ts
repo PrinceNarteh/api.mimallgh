@@ -8,7 +8,7 @@ import { UserService } from 'src/user/user.service';
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async validateUser(emailOrPhoneNumber: string, password: string) {
