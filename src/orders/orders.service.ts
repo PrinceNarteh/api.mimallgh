@@ -6,6 +6,7 @@ import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/orderDto';
 import { User } from 'src/entities/user.entity';
+import { Shop } from 'src/entities/shop.entity';
 
 @Injectable()
 export class OrdersService {
@@ -32,6 +33,15 @@ export class OrdersService {
         userId: {
           id: userId,
         },
+      },
+      relations: ['items'],
+    });
+  }
+
+  async getOrdersByShop(shop: Shop) {
+    return await this.orderItemRepo.find({
+      where: {
+        shopId: {}
       },
       relations: ['items'],
     });

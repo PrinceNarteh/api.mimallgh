@@ -1,17 +1,18 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   Param,
-  Delete,
   Post,
-  UseGuards,
   Request,
-  Body,
+  UseGuards,
 } from '@nestjs/common';
-import { OrdersService } from './orders.service';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ShopJwtGuard } from 'src/shop-auth/guards/jwt-auth.guard';
 import { CreateOrderDto } from './dto/orderDto';
-import { AuthGuard } from '@nestjs/passport';
+import { OrdersService } from './orders.service';
+import { Shop } from 'src/entities/shop.entity';
 
 @Controller('orders')
 export class OrdersController {
@@ -30,6 +31,12 @@ export class OrdersController {
   @Get(':userId/user')
   async getOrdersByUser(@Param() orderId: string) {
     return this.orderService.getOrdersByUser(orderId);
+  }
+
+  @UseGuards(ShopJwtGuard)
+  @Get(':userId/user')
+  async getOrdersByShop(@Param() shop: Shop) {
+    return this.orderService.getOrdersByShop(shop);
   }
 
   @UseGuards(JwtGuard)
