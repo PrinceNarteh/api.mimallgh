@@ -9,9 +9,9 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { CreateProductDto, UpdateProductDto } from './dto/productDto';
+import { ShopJwtGuard } from 'src/modules/shop-auth/guards/jwt-auth.guard';
+import { CreateProductDto } from './dto/productDto';
 import { ProductService } from './product.service';
-import { ShopJwtGuard } from 'src/shop-auth/guards/jwt-auth.guard';
 
 @Controller('products')
 export class ProductController {
@@ -19,11 +19,7 @@ export class ProductController {
 
   @Get()
   async allProducts() {
-    return this.productService.products({
-      relations: {
-        images: true,
-      },
-    });
+    return this.productService.products({});
   }
 
   @Get(':productId')

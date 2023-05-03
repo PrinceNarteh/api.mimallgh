@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { ShopModule } from 'src/shop/shop.module';
+import { ShopModule } from 'src/modules/shops/shop.module';
 import { ShopAuthController } from './shop-auth.controller';
 import { ShopAuthService } from './shop-auth.service';
 import { ShopJwtStrategy } from './strategies/jwt-strategy';
