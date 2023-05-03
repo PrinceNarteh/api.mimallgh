@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  user
+}
+
+enum UserLevel {
+  level_one
+  level_two
+  level_three
+  super_user
+}
+
+model User {
+  id              String    @id @default(cuid())
+  firstName       String
+  lastName        String
+  middleName      String?
+  address         String
+  phoneNumber     String
+  alternateNumber String?
+  nationality     String
+  email           String
+  password        String
+  cardType        String?
+  cardNumber      String?
+  active          Boolean   @default(true)
+  role            UserRole  @default(user)
+  level           UserLevel @default(level_one)
+  orders          Order[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  imageId         String
+  image           Image?
+}
+
+model Image {
+  id         String @id @default(cuid())
+  public_id  String
+  secure_url String
+
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  shopId String @unique
+  shop   Shop   @relation(fields: [shopId], references: [id])
+}
+
+model Order {
+  id      String      @id @default(cuid())
+  orderId String
+  amount  Float
+  items   OrderItem[]
+  userId  String
+  user    User        @relation(fields: [userId], references: [id])
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  productId String
+  name      String
+  quantity  Int
+  price     Float
+  shopName  String
+  shopId    String
+  orderId   String
+  Order     Order  @relation(fields: [orderId], references: [id])
+}
+
+enum ProductCategory {
+  food
+  fashion_and_wears
+  grocery_and_general
+  health_and_wellness
+  home_and_electrical_appliances
+  personal_services
+  printing_and_stationery
+  tech
+}
+
+model Product {
+  id                 String          @id @default(cuid())
+  title              String
+  description        String          @db.LongText
+  price              Float
+  discountPercentage Int             @default(0)
+  stock              Int
+  brand              String
+  category           ProductCategory
+  shopId             String
+  shop               Shop            @relation(fields: [shopId], references: [id])
+  images             Image[]
+}
+
+model Shop {
+  id              String    @id @default(cuid())
+  name            String
+  shopCode        String
+  password        String
+  plainPassword   String
+  description     String
+  location        String
+  mapDirection    String
+  phoneNumber     String
+  alternateNumber String?
+  whatsappNumber  String?
+  instagramHandle String?
+  facebookHandle  String?
+  openingTime     String
+  closingTime     String
+  image           Image?
+  products        Product[]
+}
