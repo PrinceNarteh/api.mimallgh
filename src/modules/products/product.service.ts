@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateProductDto, UpdateProductDto } from './dto/productDto';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
-import { Product } from '@prisma/client';
+import { Prisma, Product, Shop } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
@@ -21,48 +21,50 @@ export class ProductService {
     return product;
   }
 
-  async products(params: FindManyOptions<Product>) {
-    const { skip, take, where, order, select, relations } = params;
-    return this.productRepo.find({
+  async products(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.ProductWhereUniqueInput;
+    where?: Prisma.ProductWhereInput;
+    orderBy?: Prisma.ProductOrderByWithRelationInput;
+  }): Promise<Product[]> {
+    const { skip, take, cursor, where, orderBy } = params;
+    return await this.prismaService.product.findMany({
       skip,
       take,
+      cursor,
       where,
-      order,
-      select,
-      relations,
+      orderBy,
+      include: {
+        images: true,
+        shop: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
   }
 
-  async createProduct(shopId: string, data: CreateProductDto) {
-    const shop = await this.shopRepo.findOne({
+  async createProduct(shopId: string, data: any) {
+    const shop = await this.prismaService.product.findUnique({
       where: { id: shopId },
-      relations: {
-        products: true,
-      },
     });
     if (!shop) {
       throw new NotFoundException('Shop not found');
     }
 
-    const { images } = data;
-    const imageArr = [];
-
-    for (let image of images) {
-      const res = this.productImgRepo.create(image);
-      await this.productImgRepo.save(res);
-      imageArr.push(res);
-    }
-
-    const product = this.productRepo.create({
-      ...data,
-      images: imageArr,
+    const product = await this.prismaService.product.create({
+      data: {
+        ...data,
+        images: {
+          createMany: {
+            data: data.images,
+          },
+        },
+      },
     });
-
-    await this.productRepo.save(product);
-
-    shop.products.push(product);
-
-    await this.shopRepo.save(shop);
 
     return product;
   }
@@ -70,63 +72,50 @@ export class ProductService {
   async updateProduct(
     shop: { id: string; shopCode: string },
     productId: string,
-    data: UpdateProductDto,
+    data: any,
   ) {
-    const product = await this.productRepo.findOne({
+    const product = await this.prismaService.product.findUnique({
       where: { id: productId },
-      relations: {
-        images: true,
-        shop: true,
-      },
     });
     if (!product) {
       throw new NotFoundException('Product not found');
     }
 
-    if (product.shop.id !== shop.id) {
+    if (product.shopId !== shop.id) {
       throw new ForbiddenException(
         'You are not permitted to perform this action',
       );
     }
 
-    for (let image of product.images) {
-      await this.productImgRepo.delete(image.id);
-    }
-
-    const { images } = data;
-    const imageArr: ProductImage[] = [];
-
-    for (let image of images) {
-      const res = this.productImgRepo.create(image);
-      await this.productImgRepo.save(res);
-      imageArr.push(res);
-    }
-
-    const newData = {
-      ...data,
-      images: imageArr,
-    };
-
-    const instance = await this.productRepo.findOne({
-      where: { id: productId },
-      relations: {
-        images: true,
+    const instance = await this.prismaService.product.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        ...data,
+        images: {
+          deleteMany: {
+            id: productId,
+          },
+          createMany: {
+            data: data.images,
+          },
+        },
       },
     });
-
-    Object.assign(instance, newData);
-    instance.save();
 
     return instance;
   }
 
-  async deleteProduct(shop: Shop, id: string) {
-    const product = await this.productRepo.findOne({ where: { id } });
-    if (product && shop.id !== product.shop.id) {
+  async deleteProduct(shop: Shop, productId: string) {
+    const product = await this.prismaService.product.findUnique({
+      where: { id: productId },
+    });
+    if (product && shop.id !== product.shopId) {
       throw new ForbiddenException(
         'You are not permitted to perform this action',
       );
     }
-    return this.productRepo.delete({ id });
+    return this.prismaService.product.delete({ where: { id: productId } });
   }
 }
