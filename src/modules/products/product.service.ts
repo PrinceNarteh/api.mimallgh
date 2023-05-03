@@ -97,12 +97,15 @@ export class ProductService {
         ...data,
         images: {
           deleteMany: {
-            id: productId,
+            productId,
           },
           createMany: {
             data: data.images,
           },
         },
+      },
+      include: {
+        images: true,
       },
     });
 
@@ -113,11 +116,18 @@ export class ProductService {
     const product = await this.prismaService.product.findUnique({
       where: { id: productId },
     });
+
     if (product && shop.id !== product.shopId) {
       throw new ForbiddenException(
         'You are not permitted to perform this action',
       );
+    } else if (product && shop.id === product.shopId) {
+      await this.prismaService.productImage.deleteMany({
+        where: { productId },
+      });
+      await this.prismaService.product.delete({ where: { id: productId } });
+    } else {
+      return null;
     }
-    return this.prismaService.product.delete({ where: { id: productId } });
   }
 }
