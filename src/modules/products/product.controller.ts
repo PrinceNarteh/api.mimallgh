@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -19,20 +20,17 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get()
-  async getProducts(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.ProductWhereUniqueInput;
-    where?: Prisma.ProductWhereInput;
-    orderBy?: Prisma.ProductOrderByWithRelationInput;
-  }) {
-    const { skip, take, cursor, where, orderBy } = params;
+  async getProducts(
+    @Query('take') take?: number,
+    @Query('skip') skip?: number,
+    @Query('orderBy') orderBy?: 'asc' | 'desc',
+  ) {
     return this.productService.products({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
+      take: Number(take) || undefined,
+      skip: Number(skip) || undefined,
+      orderBy: {
+        updatedAt: orderBy,
+      },
     });
   }
 

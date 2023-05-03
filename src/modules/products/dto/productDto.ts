@@ -57,12 +57,6 @@ export class CreateProductDto {
   )
   category: string;
 
-  @IsOptional()
-  @Min(0, { each: true })
-  @Max(5, { each: true })
-  @IsInt()
-  rating: number[];
-
   @ValidateNested()
   @Type(() => ProductImageDto)
   images: ProductImageDto[];

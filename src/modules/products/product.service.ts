@@ -48,7 +48,8 @@ export class ProductService {
   }
 
   async createProduct(shopId: string, data: any) {
-    const shop = await this.prismaService.product.findUnique({
+    console.log(shopId);
+    const shop = await this.prismaService.shop.findUnique({
       where: { id: shopId },
     });
     if (!shop) {
@@ -58,6 +59,7 @@ export class ProductService {
     const product = await this.prismaService.product.create({
       data: {
         ...data,
+        shopId,
         images: {
           createMany: {
             data: data.images,
