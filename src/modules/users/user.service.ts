@@ -3,22 +3,16 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
-import { UserImage } from 'src/entities/userImage.entity';
-import { FindManyOptions, Repository } from 'typeorm';
-import { CreateUserDto, UpdateUserDto } from './dto/userDto';
+import { Prisma, User } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
+import { UpdateUserDto } from './dto/userDto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(UserImage)
-    private readonly userImgRepo: Repository<UserImage>,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async user(id: string) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.prismaService.user.findUnique({ where: { id } });
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -27,11 +21,13 @@ export class UserService {
   }
 
   async findOneByEmailOrPhoneNumber(emailOrPhoneNumber: string) {
-    const user = await this.userRepository.findOne({
-      where: [
-        { email: emailOrPhoneNumber },
-        { phoneNumber: emailOrPhoneNumber },
-      ],
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        OR: [
+          { email: emailOrPhoneNumber },
+          { phoneNumber: emailOrPhoneNumber },
+        ],
+      },
     });
 
     if (!user) {
@@ -40,20 +36,33 @@ export class UserService {
     return user;
   }
 
-  async users(params: FindManyOptions<User>) {
-    const { skip, take, where, order, select } = params;
-    return this.userRepository.find({
+  async getUsers(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.UserWhereUniqueInput;
+    where?: Prisma.UserWhereInput;
+    orderBy?: Prisma.UserOrderByWithRelationInput;
+    include?: Prisma.UserInclude;
+  }): Promise<User[]> {
+    const { skip, take, cursor, where, orderBy, include } = params;
+    return await this.prismaService.user.findMany({
       skip,
       take,
+      cursor,
       where,
-      order,
-      select,
+      orderBy,
+      include: {
+        image: true,
+        ...include,
+      },
     });
   }
 
-  async createUser(data: CreateUserDto) {
-    const emailOrPhoneNumberExist = await this.userRepository.findOne({
-      where: [{ email: data.email }, { phoneNumber: data.phoneNumber }],
+  async createUser(data: any) {
+    const emailOrPhoneNumberExist = await this.prismaService.user.findFirst({
+      where: {
+        OR: [{ email: data.email }, { phoneNumber: data.phoneNumber }],
+      },
     });
 
     if (emailOrPhoneNumberExist) {
@@ -62,19 +71,20 @@ export class UserService {
 
     const { image, ...res } = data;
     if (image) {
-      const img = this.userImgRepo.create(image);
-      await this.userImgRepo.save(img);
-      const newData = {
-        ...res,
-        image: img,
-      };
-      const user = this.userRepository.create(newData);
-      await this.userRepository.save(user);
+      const user = await this.prismaService.user.create({
+        data: {
+          ...data,
+          image: {
+            create: {
+              ...data.image,
+            },
+          },
+        },
+      });
       const { password, ...result } = user;
       return result;
     } else {
-      const user = this.userRepository.create(data);
-      await this.userRepository.save(user);
+      const user = await this.prismaService.user.create(data);
       const { password, ...result } = user;
       return result;
     }

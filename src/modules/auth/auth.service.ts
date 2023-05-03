@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/entities/user.entity';
 import { UserService } from 'src/modules/users/user.service';
 
 @Injectable()

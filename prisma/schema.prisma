@@ -28,10 +28,10 @@ model User {
   lastName        String    @map("last_name")
   middleName      String?   @map("middle_name")
   address         String
-  phoneNumber     String    @map("phone_number")
+  phoneNumber     String    @unique @map("phone_number")
   alternateNumber String?   @map("alternate_number")
   nationality     String
-  email           String
+  email           String    @unique
   password        String
   cardType        String?   @map("card_type")
   cardNumber      String?   @map("card_number")
@@ -56,29 +56,35 @@ model Image {
   userId String @unique @map("user_id")
   user   User   @relation(fields: [userId], references: [id])
 
-  shopId String @unique @map("shop_id")
-  shop   Shop   @relation(fields: [shopId], references: [id])
+  shopId    String   @unique @map("shop_id")
+  shop      Shop     @relation(fields: [shopId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
-
+ 
 model Order {
-  id      String      @id @default(cuid())
-  orderId String      @map("order_id")
-  amount  Float
-  items   OrderItem[]
-  userId  String      @map("user_id")
-  user    User        @relation(fields: [userId], references: [id])
+  id        String      @id @default(cuid())
+  orderId   String      @map("order_id")
+  amount    Float
+  items     OrderItem[]
+  userId    String      @map("user_id")
+  user      User        @relation(fields: [userId], references: [id])
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
 }
 
 model OrderItem {
-  id          String @id @default(cuid())
-  productId   String @map("product_id")
+  id          String   @id @default(cuid())
+  productId   String   @map("product_id")
   productName String
   quantity    Int
   price       Float
-  shopId      String @map("shop_id")
-  shopName    String @map("shop_name")
-  orderId     String @map("order_id")
-  Order       Order  @relation(fields: [orderId], references: [id])
+  shopId      String   @map("shop_id")
+  shopName    String   @map("shop_name")
+  orderId     String   @map("order_id")
+  Order       Order    @relation(fields: [orderId], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 }
 
 enum ProductCategory {
@@ -104,6 +110,8 @@ model Product {
   shopId             String          @map("shop_id")
   shop               Shop            @relation(fields: [shopId], references: [id])
   images             Image[]
+  createdAt          DateTime        @default(now()) @map("created_at")
+  updatedAt          DateTime        @updatedAt @map("updated_at")
 }
 
 model Shop {
@@ -124,4 +132,6 @@ model Shop {
   closingTime     String    @map("closing_time")
   image           Image?
   products        Product[]
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 }
