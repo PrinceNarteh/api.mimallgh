@@ -4,7 +4,6 @@ import { ShopService } from 'src/modules/shops/shop.service';
 import { ShopLocalAuthGuard } from './guards/local-auth.guard';
 import { ShopRefreshJwtGuard } from './guards/refresh-jwt-auth.guard';
 import { ShopAuthService } from './shop-auth.service';
-import { Prisma } from '@prisma/client';
 
 @Controller('shop-auth')
 export class ShopAuthController {
@@ -20,7 +19,7 @@ export class ShopAuthController {
   }
 
   @Post('register')
-  async registerShop(@Body() createShopDto: Prisma.ShopCreateInput) {
+  async registerShop(@Body() createShopDto: CreateShopDto) {
     return await this.shopService.createShop(createShopDto);
   }
 

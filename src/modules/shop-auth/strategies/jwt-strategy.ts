@@ -6,7 +6,7 @@ export class ShopJwtStrategy extends PassportStrategy(Strategy, 'jwt-shop') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: `${process.env.SHOP_JWT_SECRET}`,
+      secretOrKey: `6UNZ7rWXy9gjBo965rWKxpy9xAo7D08kBuV7kGwuFiw=`,
     });
   }
 

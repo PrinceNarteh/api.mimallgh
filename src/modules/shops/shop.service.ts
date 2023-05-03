@@ -1,7 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { customAlphabet } from 'nanoid';
+
+const nanoid = customAlphabet(
+  'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+);
 
 import { Prisma, Shop } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { CreateShopDto } from './dto/shopDto';
 
 @Injectable()
 export class ShopService {
@@ -53,8 +60,34 @@ export class ShopService {
     });
   }
 
-  async createShop(data: Prisma.ShopCreateInput) {
-    return this.prismaService.shop.create({ data });
+  async createShop(data: CreateShopDto) {
+    const lastItem = await this.prismaService.shop.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+      take: 1,
+    })[0];
+
+    const password = nanoid(10);
+    const hashPassword = await bcrypt.hash(password, 12);
+
+    let shopCode: string;
+    const year = new Date().getFullYear().toString().substring(2);
+
+    if (lastItem === undefined) {
+      shopCode = `CRCC${year}000001`;
+    } else {
+      console.log(lastItem);
+    }
+
+    return this.prismaService.shop.create({
+      data: {
+        ...data,
+        shopCode,
+        plainPassword: password,
+        password: hashPassword,
+      },
+    });
   }
 
   async updateShop(shopId: string, data: any) {
