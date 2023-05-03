@@ -11,8 +11,8 @@ import {
 } from '@nestjs/common';
 import { JwtGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { ShopJwtGuard } from 'src/modules/shop-auth/guards/jwt-auth.guard';
-import { CreateOrderDto } from './dto/orderDto';
 import { OrdersService } from './orders.service';
+import { Prisma } from '@prisma/client';
 
 @Controller('orders')
 export class OrdersController {
@@ -73,7 +73,10 @@ export class OrdersController {
 
   @UseGuards(JwtGuard)
   @Post()
-  async createOrder(@Request() req, @Body() createOrderDto: CreateOrderDto) {
+  async createOrder(
+    @Request() req,
+    @Body() createOrderDto: Prisma.OrderCreateInput,
+  ) {
     return this.orderService.createOrder(req.user, createOrderDto);
   }
 

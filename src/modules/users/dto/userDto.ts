@@ -1,4 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
+import { UserLevel, UserRole } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsString,
@@ -9,10 +10,6 @@ import {
   IsOptional,
   ValidateNested,
 } from 'class-validator';
-import { Shop } from 'src/entities/shop.entity';
-import { UserLevelType, UserRoleType } from 'src/entities/user.entity';
-import { UserImage } from 'src/entities/userImage.entity';
-import { OneToOne } from 'typeorm';
 
 export class CreateUserDto {
   @IsString()
@@ -60,21 +57,19 @@ export class CreateUserDto {
   active: boolean;
 
   @IsOptional()
-  @OneToOne(() => UserImage, (userImage) => userImage.userId)
-  image?: UserImage;
+  image?: string;
 
   @IsString()
   @IsOptional()
-  role: UserRoleType;
+  role: UserRole;
 
   @IsString()
   @IsOptional()
-  level: UserLevelType;
+  level: UserLevel;
 
+  @IsString()
   @IsOptional()
-  @ValidateNested()
-  @Type(() => Shop)
-  shopId: Shop;
+  shopId: string;
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}

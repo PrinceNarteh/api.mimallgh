@@ -12,14 +12,28 @@ import {
 import { ShopJwtGuard } from 'src/modules/shop-auth/guards/jwt-auth.guard';
 import { CreateProductDto } from './dto/productDto';
 import { ProductService } from './product.service';
+import { Prisma } from '@prisma/client';
 
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get()
-  async allProducts() {
-    return this.productService.products({});
+  async getProducts(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.ProductWhereUniqueInput;
+    where?: Prisma.ProductWhereInput;
+    orderBy?: Prisma.ProductOrderByWithRelationInput;
+  }) {
+    const { skip, take, cursor, where, orderBy } = params;
+    return this.productService.products({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
   }
 
   @Get(':productId')

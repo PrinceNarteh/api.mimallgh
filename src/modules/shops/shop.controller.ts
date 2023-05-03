@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CreateShopDto } from './dto/shopDto';
 import { ShopService } from './shop.service';
@@ -15,10 +16,16 @@ export class ShopController {
   constructor(private readonly shopService: ShopService) {}
 
   @Get()
-  async allShop() {
+  async getShops(
+    @Query('take') take?: number,
+    @Query('skip') skip?: number,
+    @Query('orderBy') orderBy?: 'asc' | 'desc',
+  ) {
     return await this.shopService.shops({
-      relations: {
-        products: true,
+      take: Number(take) || undefined,
+      skip: Number(skip) || undefined,
+      orderBy: {
+        updatedAt: orderBy,
       },
     });
   }

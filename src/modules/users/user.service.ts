@@ -36,7 +36,7 @@ export class UserService {
     return user;
   }
 
-  async getUsers(params: {
+  async findAll(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.UserWhereUniqueInput;
@@ -90,34 +90,32 @@ export class UserService {
     }
   }
 
-  async updateUser(userId: string, data: UpdateUserDto) {
+  async updateUser(userId: string, data: any) {
     let user = await this.user(userId);
 
     if (!user) {
       throw new BadRequestException('User not found');
     }
 
-    const { image, ...res } = data;
+    user = await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ...data,
+        image: {
+          delete: true,
+          create: {
+            ...data.image,
+          },
+        },
+      },
+    });
 
-    if (image) {
-      await this.userImgRepo.delete({ id: data.image.id });
-      const img = this.userImgRepo.create(image);
-      await this.userImgRepo.save(img);
-      const newData = {
-        ...res,
-        image: img,
-      };
-      await this.userRepository.update({ id: userId }, newData);
-      user = await this.user(userId);
-      return user;
-    } else {
-      await this.userRepository.update({ id: userId }, data);
-      user = await this.user(userId);
-      return user;
-    }
+    return user;
   }
 
   async deleteUser(id: string) {
-    return this.userRepository.delete({ id });
+    return this.prismaService.user.delete({ where: { id } });
   }
 }

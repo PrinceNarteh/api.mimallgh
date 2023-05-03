@@ -1,6 +1,5 @@
 import { OmitType } from '@nestjs/swagger';
 import { IsPositive, IsString, ValidateNested } from 'class-validator';
-import { Order } from 'src/entities/order.entity';
 
 // class CreateOrderItemDto {
 //   @IsString()
@@ -18,5 +17,3 @@ import { Order } from 'src/entities/order.entity';
 //   @IsString()
 //   shopId: string;
 // }
-
-export class CreateOrderDto extends OmitType(Order, ['id']) {}
