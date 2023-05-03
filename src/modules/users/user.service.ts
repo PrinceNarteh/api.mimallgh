@@ -31,6 +31,8 @@ export class UserService {
       },
     });
 
+    console.log(user);
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -70,9 +72,11 @@ export class UserService {
       throw new BadRequestException('Email or Phone number already in used.');
     }
 
-    const { image, password, ...res } = data;
+    const { image, password } = data;
 
     const hashPassword = await bcrypt.hash(password, 12);
+
+    console.log(hashPassword);
 
     if (image) {
       const user = await this.prismaService.user.create({
@@ -89,7 +93,12 @@ export class UserService {
       const { password, ...result } = user;
       return result;
     } else {
-      const user = await this.prismaService.user.create({ data });
+      const user = await this.prismaService.user.create({
+        data: {
+          ...data,
+          password: hashPassword,
+        },
+      });
       const { password, ...result } = user;
       return result;
     }
