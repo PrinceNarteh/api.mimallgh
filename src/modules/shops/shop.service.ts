@@ -9,6 +9,7 @@ import { Prisma, Shop } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { CreateShopDto } from './dto/shopDto';
+import { pad } from 'src/utils/pad';
 
 @Injectable()
 export class ShopService {
@@ -61,12 +62,12 @@ export class ShopService {
   }
 
   async createShop(data: CreateShopDto) {
-    const lastItem = await this.prismaService.shop.findMany({
+    const shops = await this.prismaService.shop.findMany({
       orderBy: {
         id: 'desc',
       },
       take: 1,
-    })[0];
+    });
 
     const password = nanoid(10);
     const hashPassword = await bcrypt.hash(password, 12);
@@ -74,10 +75,12 @@ export class ShopService {
     let shopCode: string;
     const year = new Date().getFullYear().toString().substring(2);
 
-    if (lastItem === undefined) {
+    if (shops.length === 0) {
       shopCode = `CRCC${year}000001`;
     } else {
-      console.log(lastItem);
+      const lastItem = shops[0].shopCode.split(year)[1];
+      const index = pad(lastItem);
+      shopCode = `CRCC${year}${index}`;
     }
 
     return this.prismaService.shop.create({

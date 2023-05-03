@@ -1,5 +1,4 @@
-export const pad = (num: string, size: number) => {
-  num = num.toString();
-  while (num.length < size) num = '0' + num;
-  return num;
+export const pad = (num: string) => {
+  const index = Number(num) + 1;
+  return index.toString().padStart(6, '0');
 };
