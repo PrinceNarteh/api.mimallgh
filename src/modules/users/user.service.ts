@@ -5,7 +5,8 @@ import {
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { UpdateUserDto } from './dto/userDto';
+import { CreateUserDto, UpdateUserDto } from './dto/userDto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -58,7 +59,7 @@ export class UserService {
     });
   }
 
-  async createUser(data: any) {
+  async createUser(data: CreateUserDto) {
     const emailOrPhoneNumberExist = await this.prismaService.user.findFirst({
       where: {
         OR: [{ email: data.email }, { phoneNumber: data.phoneNumber }],
@@ -69,11 +70,15 @@ export class UserService {
       throw new BadRequestException('Email or Phone number already in used.');
     }
 
-    const { image, ...res } = data;
+    const { image, password, ...res } = data;
+
+    const hashPassword = await bcrypt.hash(password, 12);
+
     if (image) {
       const user = await this.prismaService.user.create({
         data: {
           ...data,
+          password: hashPassword,
           image: {
             create: {
               ...data.image,
@@ -84,7 +89,7 @@ export class UserService {
       const { password, ...result } = user;
       return result;
     } else {
-      const user = await this.prismaService.user.create(data);
+      const user = await this.prismaService.user.create({ data });
       const { password, ...result } = user;
       return result;
     }

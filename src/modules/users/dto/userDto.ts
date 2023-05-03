@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
-import { UserLevel, UserRole } from '@prisma/client';
+import { Prisma, UserLevel, UserRole } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsString,
@@ -57,7 +57,7 @@ export class CreateUserDto {
   active: boolean;
 
   @IsOptional()
-  image?: string;
+  image?: any;
 
   @IsString()
   @IsOptional()
