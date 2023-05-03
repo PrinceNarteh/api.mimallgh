@@ -8,6 +8,8 @@ import { ProductModule } from './product/product.module';
 import { ShopAuthModule } from './shop-auth/shop-auth.module';
 import { ShopModule } from './shop/shop.module';
 import { UserModule } from './user/user.module';
+import { PrismaModule } from './modules/prisma/prisma.module';
+import { PrismaService } from './modules/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { UserModule } from './user/user.module';
     ShopModule,
     ShopAuthModule,
     OrdersModule,
+    PrismaModule,
   ],
+  providers: [PrismaService],
 })
 export class AppModule {}
