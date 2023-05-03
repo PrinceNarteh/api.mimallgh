@@ -8,8 +8,8 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
-import { ShopJwtGuard } from 'src/shop-auth/guards/jwt-auth.guard';
+import { JwtGuard } from 'src/modules/auth/guards/jwt-auth.guard';
+import { ShopJwtGuard } from 'src/modules/shop-auth/guards/jwt-auth.guard';
 import { CreateOrderDto } from './dto/orderDto';
 import { OrdersService } from './orders.service';
 import { Shop } from 'src/entities/shop.entity';

@@ -70,15 +70,15 @@ model Order {
 }
 
 model OrderItem {
-  id        String @id @default(cuid())
-  productId String @map("product_id")
-  name      String
-  quantity  Int
-  price     Float
-  shopName  String @map("shop_name")
-  shopId    String @map("shop_id")
-  orderId   String @map("order_id")
-  Order     Order  @relation(fields: [orderId], references: [id])
+  id          String @id @default(cuid())
+  productId   String @map("product_id")
+  productName String
+  quantity    Int
+  price       Float
+  shopId      String @map("shop_id")
+  shopName    String @map("shop_name")
+  orderId     String @map("order_id")
+  Order       Order  @relation(fields: [orderId], references: [id])
 }
 
 enum ProductCategory {

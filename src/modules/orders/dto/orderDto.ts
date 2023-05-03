@@ -1,46 +1,22 @@
+import { OmitType } from '@nestjs/swagger';
 import { IsPositive, IsString, ValidateNested } from 'class-validator';
+import { Order } from 'src/entities/order.entity';
 
-// export class OrderItem extends Base {
-//   @Column()
-//   productId: string;
-
-//   @Column()
+// class CreateOrderItemDto {
+//   @IsString()
 //   name: string;
 
-//   @Column()
+//   @IsPositive()
 //   quantity: number;
 
-//   @Column()
+//   @IsPositive()
 //   price: number;
 
-//   @Column()
+//   @IsString()
 //   shopName: string;
 
-//   @ManyToOne(() => Order, (order) => order.items)
-//   order: Order;
+//   @IsString()
+//   shopId: string;
 // }
 
-class CreateOrderItemDto {
-  @IsString()
-  name: string;
-
-  @IsPositive()
-  quantity: number;
-
-  @IsPositive()
-  price: number;
-
-  @IsString()
-  shopName: string;
-
-  @IsString()
-  shopId: string;
-}
-
-export class CreateOrderDto {
-  @IsPositive()
-  amount: number;
-
-  @ValidateNested()
-  items: CreateOrderItemDto[];
-}
+export class CreateOrderDto extends OmitType(Order, ['id']) {}

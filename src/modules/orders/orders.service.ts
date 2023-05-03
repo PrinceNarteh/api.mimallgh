@@ -1,113 +1,144 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { OrderItem } from 'src/entities/OrderItem.entity';
-import { Order } from 'src/entities/order.entity';
-import { UserService } from 'src/user/user.service';
-import { Repository } from 'typeorm';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { UserService } from 'src/modules/users/user.service';
 import { CreateOrderDto } from './dto/orderDto';
-import { User } from 'src/entities/user.entity';
-import { Shop } from 'src/entities/shop.entity';
+import { Order, Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class OrdersService {
   constructor(
-    @InjectRepository(Order)
-    private readonly orderRepo: Repository<Order>,
-    @InjectRepository(OrderItem)
-    private readonly orderItemRepo: Repository<OrderItem>,
+    private readonly prismaService: PrismaService,
     private readonly userService: UserService,
   ) {}
 
-  async getAllOrders() {
-    return await this.orderRepo.find({
-      relations: {
+  async getAllOrders(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.OrderWhereUniqueInput;
+    where?: Prisma.OrderWhereInput;
+    orderBy?: Prisma.OrderOrderByWithRelationInput;
+  }): Promise<Order[]> {
+    const { skip, take, cursor, where, orderBy } = params;
+    return await this.prismaService.order.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+      include: {
         items: true,
-        userId: true,
       },
     });
   }
 
-  async getOrdersByUser(userId: string) {
-    return await this.orderRepo.find({
+  async getOrdersByUser(
+    userId: string,
+    params: {
+      skip?: number;
+      take?: number;
+      cursor?: Prisma.OrderWhereUniqueInput;
+      where?: Prisma.OrderWhereInput;
+      orderBy?: Prisma.OrderOrderByWithRelationInput;
+    },
+  ): Promise<Order[]> {
+    const { skip, take, cursor, orderBy } = params;
+    return await this.prismaService.order.findMany({
       where: {
-        userId: {
-          id: userId,
-        },
+        userId,
       },
-      relations: ['items'],
+      skip,
+      take,
+      cursor,
+      orderBy,
+      include: {
+        items: true,
+      },
     });
   }
 
-  async getOrdersByShop(shop: Shop) {
-    return await this.orderItemRepo.find({
+  async getOrdersByShop(
+    userId: string,
+    params: {
+      skip?: number;
+      take?: number;
+      cursor?: Prisma.OrderWhereUniqueInput;
+      where?: Prisma.OrderWhereInput;
+      orderBy?: Prisma.OrderOrderByWithRelationInput;
+    },
+  ): Promise<Order[]> {
+    const { skip, take, cursor, orderBy } = params;
+    return await this.prismaService.order.findMany({
       where: {
-        shopId: {}
+        userId,
       },
-      relations: ['items'],
+      skip,
+      take,
+      cursor,
+      orderBy,
+      include: {
+        items: true,
+      },
     });
   }
 
   async getOrderById(orderId: string) {
-    return await this.orderRepo.findOne({
+    return await this.prismaService.order.findUnique({
       where: {
         id: orderId,
       },
-      relations: ['items'],
+      include: {
+        items: true,
+      },
     });
   }
 
-  async createOrder(user: User, data: CreateOrderDto) {
+  async createOrder(user: User, createOrderDto: any) {
     let userExists = await this.userService.user(user.id);
     if (!userExists) {
       throw new NotFoundException('User Not Found');
     }
 
-    const items = [];
-    for (let item of data.items) {
-      const res = this.orderItemRepo.create(item);
-      await this.orderItemRepo.save(res);
-      items.push(res);
-    }
-
-    const order = this.orderRepo.create({
-      ...data,
-      userId: userExists,
-      items,
+    const order = await this.prismaService.order.create({
+      data: {
+        ...createOrderDto,
+        items: {
+          createMany: createOrderDto.items,
+        },
+      },
     });
-
-    await this.orderRepo.save(order);
 
     return order;
   }
 
-  async updateOrder(
-    userId: string,
-    orderId: string,
-    data: Partial<CreateOrderDto>,
-  ) {
+  async updateOrder(userId: string, orderId: string, data: any) {
     let user = await this.userService.user(userId);
     if (!user) {
       throw new NotFoundException('User Not Found');
     }
 
-    const items = [];
-    for (let item of data.items) {
-      const res = this.orderItemRepo.create(item);
-      await this.orderItemRepo.save(res);
-      items.push(res);
-    }
-
-    const order = this.orderRepo.create({
-      ...data,
-      items,
+    const order = await this.prismaService.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        ...data,
+        items: {
+          deleteMany: {
+            id: orderId,
+          },
+          createMany: {
+            data: {
+              ...data.items,
+            },
+          },
+        },
+      },
     });
-
-    await this.orderRepo.save(order);
 
     return order;
   }
 
   async deleteOrder(orderId: string) {
-    return await this.orderRepo.delete(orderId);
+    return await this.prismaService.order.delete({ where: { id: orderId } });
   }
 }

@@ -3,30 +3,17 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ProductImage } from 'src/entities/productImage.entity';
-import { Shop } from 'src/entities/shop.entity';
-import { FindManyOptions, Repository } from 'typeorm';
-import { Product } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from './dto/productDto';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { Product } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
-  constructor(
-    @InjectRepository(Shop)
-    private readonly shopRepo: Repository<Shop>,
-    @InjectRepository(Product)
-    private readonly productRepo: Repository<Product>,
-    @InjectRepository(ProductImage)
-    private readonly productImgRepo: Repository<ProductImage>,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
-  async product(id: string) {
-    const product = await this.productRepo.findOne({
+  async product(id: string): Promise<Product | null> {
+    const product = await this.prismaService.product.findUnique({
       where: { id },
-      relations: {
-        images: true,
-      },
     });
     if (!product) {
       throw new NotFoundException('Product not found');
