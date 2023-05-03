@@ -1,27 +1,18 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { Shop } from '../entities/shop.entity';
-import { CreateShopDto, UpdateShopDto } from './dto/shopDto';
+import { Prisma, Shop } from '@prisma/client';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
 
 @Injectable()
 export class ShopService {
-  constructor(
-    @InjectRepository(Shop) private readonly shopRepository: Repository<Shop>,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async shop(id: string): Promise<Shop | null> {
-    const shop = await this.shopRepository.findOne({
+    const shop = await this.prismaService.shop.findUnique({
       where: { id },
-      relations: {
-        products: {
-          images: true,
-        },
+      include: {
+        image: true,
+        products: true,
       },
     });
 
@@ -32,44 +23,49 @@ export class ShopService {
   }
 
   async findShopByShopCode(shopCode: string): Promise<Shop | null> {
-    return this.shopRepository.findOne({ where: { shopCode } });
-  }
-
-  async shops(params: FindManyOptions<Shop>): Promise<Shop[]> {
-    const { skip, take, where, order, select, relations } = params;
-    return await this.shopRepository.find({
-      skip,
-      take,
-      where,
-      order,
-      select,
-      relations,
+    return this.prismaService.shop.findFirst({
+      where: { shopCode },
+      include: {
+        image: true,
+        products: true,
+      },
     });
   }
 
-  async createShop(data: CreateShopDto) {
-    try {
-      const shop = this.shopRepository.create({
-        ...data,
-        products: [],
-      });
-      await this.shopRepository.save(shop);
-      return shop;
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
+  async shops(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.ShopWhereUniqueInput;
+    where?: Prisma.ShopWhereInput;
+    orderBy?: Prisma.ShopOrderByWithRelationInput;
+  }): Promise<Shop[]> {
+    const { skip, take, cursor, where, orderBy } = params;
+    return await this.prismaService.shop.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+      include: {
+        image: true,
+        products: true,
+      },
+    });
   }
 
-  async updateShop(shopId: string, data: UpdateShopDto) {
+  async createShop(data: Prisma.ShopCreateInput) {
+    return this.prismaService.shop.create({ data });
+  }
+
+  async updateShop(shopId: string, data: any) {
     const shop = await this.shop(shopId);
     if (!shop) {
       throw new NotFoundException('Shop not found');
     }
-    await this.shopRepository.update({ id: shopId }, { ...data });
-    return this.shop(shopId);
+    return this.prismaService.shop.update({ where: { id: shopId }, data });
   }
 
   async deleteShop(id: string) {
-    return this.shopRepository.delete({ id });
+    return this.prismaService.shop.delete({ where: { id } });
   }
 }
