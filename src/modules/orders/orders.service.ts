@@ -100,9 +100,16 @@ export class OrdersService {
     const order = await this.prismaService.order.create({
       data: {
         ...createOrderDto,
+        userId: userExists.id,
+        orderId: 'ABC123',
         items: {
-          createMany: createOrderDto.items,
+          createMany: {
+            data: createOrderDto.items,
+          },
         },
+      },
+      include: {
+        items: true,
       },
     });
 
